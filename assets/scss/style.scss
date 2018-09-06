@@ -1,0 +1,68 @@
+@import "../icomoon/style.css";
+@import "variables";
+@import "base";
+@import "header";
+@import "device-monitor";
+@import "speed";
+@import "connections";
+@import "lan-devices";
+
+#app {
+  background: #22262E;
+}
+
+.main-view {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 15px;
+  display: grid;
+  grid-gap: 15px;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: repeat(3, max-content);
+  grid-template-areas:
+    "connections throughput"
+    "lan-devices lan-devices"
+    "devices devices";
+
+  @media (max-width: 700px) {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(4, max-content);
+    grid-template-areas:
+    "connections"
+    "throughput"
+    "lan-devices"
+    "devices";
+  }
+
+  &__section {
+    display: grid;
+    grid-template-rows: auto 1fr;
+
+    &--connections {
+      grid-area: connections;
+    }
+
+    &--throughput {
+      grid-area: throughput;
+    }
+
+    &--lan-devices {
+      grid-area: lan-devices;
+    }
+
+    &--devices {
+      grid-area: devices;
+    }
+  }
+  
+  &__title {
+    font-weight: normal;
+    text-align: center;
+    margin: 0;
+    padding: 20px;
+    font-size: 2rem;
+  }
+}

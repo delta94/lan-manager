@@ -1,0 +1,11 @@
+{
+  "name": "LAN Manager",
+  "short_name": "LAN Manager",
+  "start_url": "/",
+  "display": "standalone",
+  "icons": [{
+    "src": "/img/wifi.png",
+    "sizes": "768x768",
+    "type": "image/png"
+  }]
+}

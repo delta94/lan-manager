@@ -25,7 +25,6 @@
   }
 
   &--show-inactive &__Device--not-active {
-    display: block;
     animation: LanDevices__show-device .3s;
     animation-iteration-count: 1;
   }
@@ -43,7 +42,8 @@
 }
 
 .LanDevices__Device {
-  display: block;
+  display: grid;
+  grid-gap: 10px;
   text-decoration: none;
   text-align: center;
   padding: 25px 15px;
@@ -72,29 +72,19 @@
 
   &__icon {
     font-size: 2.5rem;
-    margin: 0 auto 15px auto;
   }
 
   &__name {
-    padding: 0 0 5px 0;
     font-size: 1.6rem;
   }
-
-  &__usage {
-    opacity: .8;
-    font-size: 1.3rem;
-    margin: 5px;
-  }
   
-  &__mac {
+  &__mac, &__usage {
     opacity: .8;
     font-size: 1.3rem;
-    margin: 5px;
   }
 
   &__actions {
-    margin-top: 15px;
-    text-align: center;
+    margin-top: 10px;
   }
 
   &__action {

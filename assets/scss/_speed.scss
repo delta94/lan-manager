@@ -1,18 +1,16 @@
 .Speed {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr;
-  grid-column-gap: 15px;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 15px;
   text-align: center;
   min-height: 100%;
 
   &__download, &__upload {
     background: $color-accent;
-    padding: 35px 15px;
+    padding: 25px 15px;
     border-radius: 4px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    display: grid;
+    grid-gap: 20px;
   }
 
   &__speed {
@@ -20,12 +18,10 @@
   }
 
   &__unit {
-    margin-top: 15px;
     font-weight: 600;
     font-size: 2.2rem;
   }
 
   &__graph {
-    margin-top: 15px;
   }
 }

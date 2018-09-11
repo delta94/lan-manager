@@ -59,8 +59,7 @@ export default class Device extends Component {
       `LanDevices__Device`,
       `LanDevices__Device--${device.approved ? 'approved': 'not-approved'}`,
       `LanDevices__Device--${device.active ? 'active': 'not-active'}`,
-      `LanDevices__Device--${device.blocked ? 'blocked': 'not-blocked'}`,
-      `LanDevices__Device--${device.distractionFilterEnabled ? 'distraction-filter-enabled': 'distraction-filter-not-enabled'}`
+      `LanDevices__Device--${device.blocked ? 'blocked': 'not-blocked'}`
     ].join(' ');
     
     const dataComponent = (

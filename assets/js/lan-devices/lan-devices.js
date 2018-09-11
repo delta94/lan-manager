@@ -84,21 +84,6 @@ export default class LanDevices extends Component {
     await this.loadDevices();
   }
 
-  async onToggleDistractionFilter(device) {
-    const { mac } = device;
-    const response = await fetch(`/api/lan-devices/toggle-distraction-filter/${mac}`, { method: 'post' });
-    const json = await response.json();
-    
-    if(json.error)  {
-      let error = new Error(json.message);
-      error.data = json.data;
-      error.SERVER_ERROR = true;
-      console.error(error);
-    }
-
-    await this.loadDevices();
-  }
-
   async loadDevices() {
     const response = await fetch("/api/lan-devices");
     const json = await response.json();
@@ -129,7 +114,6 @@ export default class LanDevices extends Component {
               key={device.mac}
               device={device}
               onToggleInternet={this.onToggleInternet.bind(this, device)}
-              onToggleDistractionFilter={this.onToggleDistractionFilter.bind(this, device)}
               onApprove={this.onApprove.bind(this, device)}
               onRemove={this.onRemove.bind(this, device)}
             />;

@@ -7,10 +7,9 @@
 
 .Connection {
   padding: 25px 15px;
-  display: grid;
-  grid-gap: 10px;
-  justify-content: space-around;
+  display: flex;
   align-content: space-around;
+  flex-direction: column;
   position: relative;
   overflow: hidden;
   text-align: center;
@@ -71,6 +70,11 @@
 
   &__label {
     font-size: 2.2rem;
+    margin: auto 0;
+  }
+
+  &__actions {
+    margin: auto 0;
   }
 
   &__action {

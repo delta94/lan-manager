@@ -8,6 +8,7 @@
 .Connection {
   padding: 25px 15px;
   display: grid;
+  grid-gap: 10px;
   justify-content: space-around;
   align-content: space-around;
   position: relative;
@@ -16,6 +17,7 @@
   border-radius: 4px;
   background: $color-accent;
   cursor: pointer;
+  min-height: 170px;
 
   &--not-running {
     background: $color-danger;

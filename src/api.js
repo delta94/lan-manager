@@ -164,7 +164,7 @@ router.post('/lan-devices/approve/:deviceMac', wrapAsync(async (req, res, next)=
   res.apiSuccess(`${deviceName} Approved`);
 }));
 
-router.post('/lan-devices/disapprove/:deviceMac', wrapAsync(async (req, res, next)=> {
+router.post('/lan-devices/remove/:deviceMac', wrapAsync(async (req, res, next)=> {
   const deviceMac = String(req.params.deviceMac).toUpperCase();
   if(!deviceMac) return res.apiFail({ message: 'Invalid device mac address'});
 
@@ -182,7 +182,7 @@ router.post('/lan-devices/disapprove/:deviceMac', wrapAsync(async (req, res, nex
   //Remove dhcp lease
   await mikrotik.executeCommandOnRouter('/ip/dhcp-server/lease/remove', { '.id': lease['.id'] });
 
-  res.apiSuccess(`Device disapproved`);
+  res.apiSuccess(`Device Removed`);
 }));
 
 router.post('/lan-devices/toggle-internet/:deviceMac', wrapAsync(async (req, res, next)=> {

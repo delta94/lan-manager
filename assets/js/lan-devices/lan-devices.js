@@ -54,9 +54,9 @@ export default class LanDevices extends Component {
     await this.loadDevices();
   }
 
-  async onDisapprove(device) {
+  async onRemove(device) {
     const { mac } = device;
-    const response = await fetch(`/api/lan-devices/disapprove/${mac}`, { method: 'post' });
+    const response = await fetch(`/api/lan-devices/remove/${mac}`, { method: 'post' });
     const json = await response.json();
     
     if(json.error)  {
@@ -131,7 +131,7 @@ export default class LanDevices extends Component {
               onToggleInternet={this.onToggleInternet.bind(this, device)}
               onToggleDistractionFilter={this.onToggleDistractionFilter.bind(this, device)}
               onApprove={this.onApprove.bind(this, device)}
-              onDisapprove={this.onDisapprove.bind(this, device)}
+              onRemove={this.onRemove.bind(this, device)}
             />;
           })}
         </div>      

@@ -48,7 +48,7 @@ export default class Device extends Component {
   onClick(e) {
     this.clickCount++;
     e.preventDefault();
-    if(this.clickCount === 7) this.props.onDisapprove(); //Tap 7 times to disapprove a device
+    if(this.clickCount === 7) this.props.onRemove(); //Tap 7 times to remove a device
   }
 
   render() {

@@ -20,11 +20,11 @@
     margin: 0 auto;
   }
 
-  &--hide-inactive &__Device--not-active {
+  &--hide-inactive &__Device--not-active, &--hide-inactive &__Device--not-approved {
     display: none;
   }
 
-  &--show-inactive &__Device--not-active {
+  &--show-inactive &__Device--not-active, &--show-inactive &__Device--not-approved {
     animation: LanDevices__show-device .3s;
     animation-iteration-count: 1;
   }

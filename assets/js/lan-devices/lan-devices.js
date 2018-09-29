@@ -7,7 +7,7 @@ export default class LanDevices extends Component {
     super(props);
     this.state = {
       devices: [],
-      showInactive: false
+      showAll: false
     };
   }
 
@@ -99,16 +99,16 @@ export default class LanDevices extends Component {
     this.setState(this.state);
   }
 
-  async toggleInactive() {
-    this.state.showInactive = !this.state.showInactive;
+  async toggleAll() {
+    this.state.showAll = !this.state.showAll;
     this.setState(this.state);
   }
 
   render() {
     return (
-    <div className={`LanDevices LanDevices--${this.state.showInactive? 'show': 'hide'}-inactive`}>
-        <button className="LanDevices__toggle" onClick={this.toggleInactive.bind(this)}>
-          {this.state.showInactive? 'Hide': 'Show'} Inactive Devices
+    <div className={`LanDevices LanDevices--${this.state.showAll? 'show': 'hide'}-inactive`}>
+        <button className="LanDevices__toggle" onClick={this.toggleAll.bind(this)}>
+          {this.state.showAll? 'Hide Inactive': 'Show All'} Devices
         </button>
         <div className="LanDevices__devices">
           {this.state.devices.map(device => {

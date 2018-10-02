@@ -25,7 +25,7 @@ export default class Connections extends Component {
   startConnectionMonitor() {
     this.connectionTimer = setInterval(async ()=> {
       this.loadConnections();
-    }, 1000);
+    }, 3000);
   }
 
   stopConnectionMonitor() {
@@ -48,6 +48,15 @@ export default class Connections extends Component {
   }
   
   async onPreferClick(connection) {
+    //Toggle the state for instant feedback
+    const preferred = this.state.connections.find( connection => connection.preferred === true);
+    preferred.preferred = false;
+    preferred.active = false;
+    connection.disabled = false;
+    connection.preferred = true;
+    connection.active = true;
+    this.setState(this.state);
+
     const { connectionName } = connection;
     if(connection.disabled) await this.toggleConnection(connection);
     const response = await fetch(`/api/connections/prefer/${connectionName}`, { method: 'post' });
@@ -58,8 +67,6 @@ export default class Connections extends Component {
       error.SERVER_ERROR = true;
       console.error(error);
     }
-
-    await this.loadConnections();
   }
 
   async loadConnections() {

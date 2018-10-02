@@ -197,4 +197,36 @@ router.post('/lan-devices/toggle-internet/:deviceMac', wrapAsync(async (req, res
   res.apiSuccess({ message: `Toggled Internet Access`});
 }));
 
+router.get('/address-list/:list', wrapAsync(async (req, res, next)=> {
+  const listName = req.params.list;
+  const list = await mikrotik.getAddressList(listName);
+  if(!list.length) return res.apiFail({ message: 'Unknown list'});
+  
+  //Remove dynamic address and unnecessary details
+  let addresses = [];
+  for(const address of list) {
+    const dynamic = mikrotik.convertStringToBoolean(address.dynamic);
+    const disabled = mikrotik.convertStringToBoolean(address.disabled);
+    if(dynamic) continue;
+    addresses.push({
+      disabled,
+      address: address.address,
+      comment: address.comment
+    });
+  }
+
+  res.apiSuccess(addresses);
+}));
+
+router.post('/address-list/:list/toggle-address', wrapAsync(async (req, res, next)=> {
+  const list = req.body.list;
+  const address = String(req.body.address);
+  if(!address) return res.apiFail({ message: '`address` is required'});
+
+  const result = mikrotik.toggleAddressListItem({ list, address });
+  if(!result) return res.apiFail({ message: 'Invalid address'});
+
+  res.apiSuccess({ message: `Toggled address`});
+}));
+
 export default router;

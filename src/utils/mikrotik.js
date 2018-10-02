@@ -59,6 +59,14 @@ export async function getAddressListItem({ list, address }) {
   return addressList.find( item => item.address === address);
 }
 
+export async function toggleAddressListItem({ list, address }) {
+  const addressListItem = await getAddressListItem({ list, address });
+  if(!addressListItem) return;
+  const currentStatus = convertStringToBoolean(addressListItem.disabled);
+  await executeCommandOnRouter('/ip/firewall/address-list/set', { '.id': addressListItem['.id'], disabled: convertBooleanToYesNo(!currentStatus) });
+  return await getAddressListItem({ list, address });
+}
+
 export async function getQueueForAddress(address) {
   const queues = await executeCommandOnRouter('/queue/simple/print');
   return queues.find( item=> item['target'] === `${address}/32`);

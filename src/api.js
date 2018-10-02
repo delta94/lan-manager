@@ -123,12 +123,10 @@ router.get('/lan-devices', wrapAsync(async (req, res, next)=> {
 }));
 
 router.post('/lan-devices/approve/:deviceMac', wrapAsync(async (req, res, next)=> {
-  const deviceName = req.body.deviceName;
+  const deviceName = String(req.body.deviceName);
   if(!deviceName || !/^[a-zA-Z0-9_'\-\s]*$/.test(deviceName)) return res.apiFail({ message: 'Invalid device name'});
 
-  const deviceMac = String(req.params.deviceMac).toUpperCase();
-  if(!deviceMac) return res.apiFail({ message: 'Invalid device mac address'});
-
+  const deviceMac = req.params.deviceMac.toUpperCase();
   const lease = await mikrotik.getDhcpLeaseForMac(deviceMac);
   if(!lease) return res.apiFail({ message: 'Device not connected to the network'});
 
@@ -165,9 +163,7 @@ router.post('/lan-devices/approve/:deviceMac', wrapAsync(async (req, res, next)=
 }));
 
 router.post('/lan-devices/remove/:deviceMac', wrapAsync(async (req, res, next)=> {
-  const deviceMac = String(req.params.deviceMac).toUpperCase();
-  if(!deviceMac) return res.apiFail({ message: 'Invalid device mac address'});
-
+  const deviceMac = req.params.deviceMac.toUpperCase();
   const lease = await mikrotik.getDhcpLeaseForMac(deviceMac);
   if(!lease) return res.apiFail({ message: 'Unknown device'});
   
@@ -186,14 +182,13 @@ router.post('/lan-devices/remove/:deviceMac', wrapAsync(async (req, res, next)=>
 }));
 
 router.post('/lan-devices/toggle-internet/:deviceMac', wrapAsync(async (req, res, next)=> {
-  const lease = await mikrotik.getDhcpLeaseForMac(req.params.deviceMac);
+  const deviceMac = req.params.deviceMac.toUpperCase();
+  const lease = await mikrotik.getDhcpLeaseForMac(deviceMac);
   if(!lease) return res.apiFail({ message: 'Unknown device'});
 
-  const addressListItem = await mikrotik.getAddressListItem({ list: 'Allow-Internet', address: lease['address'] });
-  if(!addressListItem) return res.apiFail({ message: 'Unknown device'});
+  const result = await mikrotik.toggleAddressListItem({ list: 'Allow-Internet', address: lease['address'] });
+  if(!result) return res.apiFail({ message: 'Unknown device'});
 
-  const currentStatus = mikrotik.convertStringToBoolean(addressListItem.disabled);
-  await mikrotik.executeCommandOnRouter('/ip/firewall/address-list/set', { '.id': addressListItem['.id'], disabled: mikrotik.convertBooleanToYesNo(!currentStatus) });
   res.apiSuccess({ message: `Toggled Internet Access`});
 }));
 

@@ -16,20 +16,25 @@ export default class LanDevices extends Component {
   }
 
   componentDidMount() {
-    this.startDeviceMonitor();
+    this.startMonitor();
   }
 
   componentWillUnmount() {
-    this.stopDeviceMonitor();
+    this.stopMonitor();
   }
 
-  startDeviceMonitor() {
+  startMonitor() {
     this.deviceTimer = setInterval(async ()=> {
       this.loadDevices();
     }, 3000);
   }
 
-  stopDeviceMonitor() {
+  restartMonitor() {
+    this.stopMonitor();
+    this.startMonitor();
+  }
+
+  stopMonitor() {
     clearInterval(this.deviceTimer);
   }
 
@@ -55,7 +60,17 @@ export default class LanDevices extends Component {
   }
 
   async onRemove(device) {
+    //Give some time for actions to complete before reloading data
+    this.restartMonitor();
+
+    //Change the state for instant feedback
+    this.state.devices = this.state.devices.filter( d => d.mac !== device.mac );
+    this.setState(this.state);
+    
     const { mac } = device;
+    device.blocked = !device.blocked;
+    this.setState(this.state);
+
     const response = await fetch(`/api/lan-devices/remove/${mac}`, { method: 'post' });
     const json = await response.json();
     
@@ -65,11 +80,16 @@ export default class LanDevices extends Component {
       error.SERVER_ERROR = true;
       console.error(error);
     }
-
-    await this.loadDevices();
   }
 
   async onToggleInternet(device) {
+    //Give some time for actions to complete before reloading data
+    this.restartMonitor();
+
+    //Toggle the state for instant feedback
+    device.blocked = !device.blocked;
+    this.setState(this.state);
+    
     const { mac } = device;
     const response = await fetch(`/api/lan-devices/toggle-internet/${mac}`, { method: 'post' });
     const json = await response.json();
@@ -80,8 +100,6 @@ export default class LanDevices extends Component {
       error.SERVER_ERROR = true;
       console.error(error);
     }
-
-    await this.loadDevices();
   }
 
   async loadDevices() {

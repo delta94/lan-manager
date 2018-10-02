@@ -15,21 +15,26 @@ export default class Connections extends Component {
   }
 
   componentDidMount() {
-    this.startConnectionMonitor();
+    this.startMonitor();
   }
 
   componentWillUnmount() {
-    this.stopConnectionMonitor();
+    this.stopMonitor();
   }
 
-  startConnectionMonitor() {
+  startMonitor() {
     this.connectionTimer = setInterval(async ()=> {
       this.loadConnections();
     }, 3000);
   }
 
-  stopConnectionMonitor() {
+  stopMonitor() {
     clearInterval(this.connectionTimer);
+  }
+
+  restartMonitor() {
+    this.stopMonitor();
+    this.startMonitor();
   }
 
   async onRestartClick(connection) {
@@ -48,6 +53,9 @@ export default class Connections extends Component {
   }
   
   async onPreferClick(connection) {
+    //Give some time for actions to complete before reloading data
+    this.restartMonitor();
+
     //Toggle the state for instant feedback
     const preferred = this.state.connections.find( connection => connection.preferred === true);
     preferred.preferred = false;

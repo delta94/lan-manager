@@ -1,0 +1,28 @@
+.AddressList {
+  display: grid;
+  grid-gap: 15px;
+
+  &__Address {
+    padding: 15px;
+    border-radius: 4px;
+    background: $color-accent;
+    display: grid;
+    grid-template-columns: max-content auto;
+    grid-gap: 15px;
+    text-align: left;
+    cursor: pointer;
+  
+    &__icon {
+      font-size: 2rem;
+      line-height: 35px;
+    }
+
+    &__label {
+      line-height: 33px;
+    }
+
+    &--not-disabled &__icon {
+      color: $color-success;
+    }
+  }
+}

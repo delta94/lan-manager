@@ -6,6 +6,7 @@
 @import "speed";
 @import "connections";
 @import "lan-devices";
+@import "address-list";
 
 #app {
   background: #22262E;
@@ -24,6 +25,7 @@
   grid-template-rows: repeat(3, max-content);
   grid-template-areas:
     "connections throughput"
+    "vpn distraction-filter"
     "lan-devices lan-devices"
     "devices devices";
 
@@ -33,6 +35,8 @@
     grid-template-areas:
     "connections"
     "throughput"
+    "vpn"
+    "distraction-filter"
     "lan-devices"
     "devices";
   }
@@ -47,6 +51,14 @@
 
     &--throughput {
       grid-area: throughput;
+    }
+
+    &--vpn {
+      grid-area: vpn;
+    }
+
+    &--distraction-filter {
+      grid-area: distraction-filter;
     }
 
     &--lan-devices {

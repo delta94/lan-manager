@@ -5,6 +5,7 @@ import DeviceMonitor from './device-monitor/device-monitor';
 import Speed from './speed'
 import Connections from './connections/connections';
 import LanDevices from './lan-devices/lan-devices';
+import AddressList from './address-list/address-list';
 import "../scss/style.scss";
 
 class App extends Component {
@@ -19,6 +20,28 @@ class App extends Component {
         <h2 className="main-view__title">Device Monitor</h2>
         <div className="main-view__section-content">
           <DeviceMonitor />
+        </div>
+      </div>
+    );
+  }
+
+  renderVPNView() {
+    return (
+      <div className="main-view__section main-view__section--vpn">
+        <h2 className="main-view__title">VPN</h2>
+        <div className="main-view__section-content">
+          <AddressList list="VPN" icon="shield"/>
+        </div>
+      </div>
+    );
+  }
+
+  renderDistractionFilterView() {
+    return (
+      <div className="main-view__section main-view__section--distraction-filter">
+        <h2 className="main-view__title">Distraction Filter</h2>
+        <div className="main-view__section-content">
+          <AddressList list="Block-Distractions" icon="bullhorn"/>
         </div>
       </div>
     );
@@ -72,6 +95,8 @@ class App extends Component {
         <div className="main-view">
           { this.renderConnectionView() }
           { this.renderSpeedView() }
+          { this.renderVPNView() }
+          { this.renderDistractionFilterView() }
           { this.renderLanDevicesView() }
           { this.renderDeviceView() }
         </div>

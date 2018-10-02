@@ -206,21 +206,18 @@ router.get('/address-list/:list', wrapAsync(async (req, res, next)=> {
     addresses.push({
       disabled,
       address: address.address,
-      comment: address.comment
+      label: address.comment //Address label is stored in the comment
     });
   }
-
+  
   res.apiSuccess(addresses);
 }));
 
-router.post('/address-list/:list/toggle-address', wrapAsync(async (req, res, next)=> {
-  const list = req.body.list;
-  const address = String(req.body.address);
-  if(!address) return res.apiFail({ message: '`address` is required'});
-
+router.post('/address-list/:list/:address/toggle', wrapAsync(async (req, res, next)=> {
+  const list = req.params.list;
+  const address = req.params.address;
   const result = mikrotik.toggleAddressListItem({ list, address });
-  if(!result) return res.apiFail({ message: 'Invalid address'});
-
+  if(!result) return res.apiFail({ message: 'Invalid address or list'});
   res.apiSuccess({ message: `Toggled address`});
 }));
 

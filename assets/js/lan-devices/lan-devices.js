@@ -132,9 +132,9 @@ export default class LanDevices extends Component {
 
   render() {
     return (
-    <div className={`LanDevices LanDevices--${this.state.showAll? 'show': 'hide'}-inactive`}>
+    <div className={`LanDevices LanDevices--show-${this.state.showAll? 'all': 'some'}`}>
         <button className="LanDevices__toggle" onClick={this.toggleAll.bind(this)}>
-          {this.state.showAll? 'Hide Inactive': 'Show All'} Devices
+          {this.state.showAll? 'Show Fewer': 'Show All'} Devices
         </button>
         <div className="LanDevices__devices">
           {this.state.devices.map(device => {

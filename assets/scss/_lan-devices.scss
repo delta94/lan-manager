@@ -19,12 +19,13 @@
     display: block;
     margin: 0 auto;
   }
-
-  &--hide-inactive &__Device--not-active, &--hide-inactive &__Device--not-approved {
+  
+  //Show first 12 devices; ie, 3 rows on an iPad and 6 rows on a phone
+  &--show-some &__Device:not(:nth-child(-n + 12)){
     display: none;
   }
 
-  &--show-inactive &__Device--not-active, &--show-inactive &__Device--not-approved {
+  &--show-all &__Device:not(:nth-child(-n + 12)) {
     animation: LanDevices__show-device .3s;
     animation-iteration-count: 1;
   }
@@ -57,7 +58,7 @@
   }
 
   &--not-active {
-    border: 3px solid rgba(white, .2);
+    opacity: .5;
   }
 
   &--blocked {

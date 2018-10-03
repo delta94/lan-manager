@@ -102,6 +102,14 @@ export default class LanDevices extends Component {
     }
   }
 
+  sortDevices(devices) {
+    //Put active devices on top then inactive devices, put the unapproved devices on the bottom
+    const activeDevices = devices.filter( device=> device.approved && device.active );
+    const inactiveDevices = devices.filter( device=> device.approved && !device.active );
+    const unapprovedDevices = devices.filter( device=> !device.approved );
+    return [...activeDevices, ...inactiveDevices, ...unapprovedDevices];
+  }
+
   async loadDevices() {
     const response = await fetch("/api/lan-devices");
     const json = await response.json();
@@ -113,7 +121,7 @@ export default class LanDevices extends Component {
       console.error(error);
     }
 
-    this.state.devices = json.data;
+    this.state.devices = this.sortDevices(json.data);
     this.setState(this.state);
   }
 

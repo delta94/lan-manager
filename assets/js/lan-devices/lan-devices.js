@@ -68,9 +68,6 @@ export default class LanDevices extends Component {
     this.setState(this.state);
     
     const { mac } = device;
-    device.blocked = !device.blocked;
-    this.setState(this.state);
-
     const response = await fetch(`/api/lan-devices/remove/${mac}`, { method: 'post' });
     const json = await response.json();
     

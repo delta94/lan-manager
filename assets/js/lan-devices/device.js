@@ -3,8 +3,13 @@ import React, { Component }from 'react';
 export default class Device extends Component {
   constructor(props) {
     super(props);
-    this.clickCount = 0;
-    this.onClick = this.onClick.bind(this);
+    this.state = {
+      isTouching: false,
+      showRemove: false
+    };
+  
+    this.onTapStart = this.onTapStart.bind(this);
+    this.onTapEnd = this.onTapEnd.bind(this);
   }
 
   static bytesToString(bytes) {
@@ -27,28 +32,20 @@ export default class Device extends Component {
     return { total, unit };
   }
 
-  componentDidMount() {
-    this.startClickTimer();
-  }
-
   componentWillUnmount() {
-    this.stopClickTimer();
+    clearTimeout(this.tapTimer);
   }
 
-  startClickTimer() {
-    this.clickTimer = setInterval(()=> {
-      this.clickCount = 0;
-    }, 2 * 1000) //Reset click count every 2 seconds
+  onTapStart() {
+    this.setState({ isTouching: true });
+    this.tapTimer = setTimeout(()=> {
+      if(this.state.isTouching) this.setState({ showRemove: !this.state.showRemove });
+    }, 3*1000 ); //Show the remove button on click and hold longer than 3 seconds
   }
 
-  stopClickTimer() {
-    clearInterval(this.clickTimer);
-  }
-
-  onClick(e) {
-    this.clickCount++;
-    e.preventDefault();
-    if(this.clickCount === 7) this.props.onRemove(); //Tap 7 times to remove a device
+  onTapEnd() {
+    clearTimeout(this.tapTimer);
+    this.setState({ isTouching: false });
   }
 
   render() {
@@ -73,9 +70,21 @@ export default class Device extends Component {
         { device.mac }
       </div>
     );
+
+    const approveButton = (
+      <button className="LanDevices__Device__action" onClick={props.onApprove}>Approve</button>
+    );
+
+    const blockButton = (
+      <button className="LanDevices__Device__action" onClick={props.onToggleInternet}>{device.blocked? 'Unblock': 'Block'}</button>
+    );
+
+    const removeButton = (
+      <button className="LanDevices__Device__action" onClick={props.onRemove}>Remove</button>
+    );
     
     return (
-      <div className={className} onClick={this.onClick}>
+      <div className={className} onMouseDown={this.onTapStart} onMouseUp={this.onTapEnd} onTouchStart={this.onTapStart} onTouchEnd={this.onTapEnd}>
         <div className="LanDevices__Device__icon">
           <i className="icon-wifi"></i>
         </div>
@@ -84,8 +93,9 @@ export default class Device extends Component {
         </div>
         { device.approved? dataComponent: macComponent }
         <div className="LanDevices__Device__actions">
-        { device.approved ? <button className="LanDevices__Device__action LanDevices__Device__action-internet" onClick={props.onToggleInternet}>{device.blocked? 'Unblock': 'Block'}</button>: null }
-        { !device.approved ? <button className="LanDevices__Device__action LanDevices__Device__action-approve" title="Approve Device" onClick={props.onApprove}>Approve</button>: null }
+          { device.approved && !this.state.showRemove ? blockButton: null}
+          { device.approved && this.state.showRemove ? removeButton: null }
+          { !device.approved ? approveButton: null }
         </div>
       </div>
     );

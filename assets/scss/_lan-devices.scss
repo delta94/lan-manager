@@ -80,9 +80,10 @@
     word-break: break-all;
   }
   
-  &__mac, &__usage {
+  &__mac, &__usage, &__ip {
     opacity: .8;
     font-size: 1.3rem;
+    cursor: pointer;
   }
 
   &__actions {

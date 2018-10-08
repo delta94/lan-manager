@@ -5,11 +5,13 @@ export default class Device extends Component {
     super(props);
     this.state = {
       isTouching: false,
-      showRemove: false
+      showRemove: false,
+      info: 'usage'
     };
   
     this.onTapStart = this.onTapStart.bind(this);
     this.onTapEnd = this.onTapEnd.bind(this);
+    this.onInfoClick = this.onInfoClick.bind(this);
   }
 
   static bytesToString(bytes) {
@@ -48,41 +50,66 @@ export default class Device extends Component {
     this.setState({ isTouching: false });
   }
 
+  onInfoClick() {
+    if(this.state.info === 'usage') this.setState({ info: 'mac' });
+    if(this.state.info === 'mac') this.setState({ info: 'ip' });
+    if(this.state.info === 'ip') this.setState({ info: 'usage' });
+  }
+
+  renderInfo() {
+    const props = this.props;
+    const state = this.state;
+    if(state.info === 'mac' || !props.device.approved) {
+      return (
+        <div className="LanDevices__Device__mac" onClick={this.onInfoClick}>
+          { props.device.mac }
+        </div>
+      );
+    } else if(state.info === 'usage') {
+      const dataUsage = Device.bytesToString(props.device.downloadBytes + props.device.uploadBytes);
+      return (
+        <div className="LanDevices__Device__usage" onClick={this.onInfoClick}>
+          <i className="icon-arrow_downward"></i> { dataUsage.total.toFixed(1) } { dataUsage.unit }
+        </div>
+      );
+    } else if(state.info === 'ip'){
+      return (
+        <div className="LanDevices__Device__ip" onClick={this.onInfoClick}>
+          { props.device.ip }
+        </div>
+      );
+    }
+  }
+
+  renderActions() {
+    const props = this.props;
+    const state = this.state;
+    const device = this.props.device;
+    if(!device.approved) {
+      return (
+        <button className="LanDevices__Device__action" onClick={props.onApprove}>Approve</button>
+      );
+    } else if(state.showRemove) {
+      return (
+        <button className="LanDevices__Device__action" onClick={props.onRemove}>Remove</button>
+      );
+    } else {
+      return (
+        <button className="LanDevices__Device__action" onClick={props.onToggleInternet}>{device.blocked? 'Unblock': 'Block'}</button>
+      );
+    }
+  }
+
   render() {
     const props = this.props;
     const device = props.device;
-    const dataUsage = Device.bytesToString(props.device.downloadBytes + props.device.uploadBytes);
     const className = [
       `LanDevices__Device`,
       `LanDevices__Device--${device.approved ? 'approved': 'not-approved'}`,
       `LanDevices__Device--${device.active ? 'active': 'not-active'}`,
       `LanDevices__Device--${device.blocked ? 'blocked': 'not-blocked'}`
     ].join(' ');
-    
-    const dataComponent = (
-      <div className="LanDevices__Device__usage">
-        <i className="icon-arrow_downward"></i> { dataUsage.total.toFixed(1) } { dataUsage.unit }
-      </div>
-    );
-    
-    const macComponent = (
-      <div className="LanDevices__Device__mac">
-        { device.mac }
-      </div>
-    );
 
-    const approveButton = (
-      <button className="LanDevices__Device__action" onClick={props.onApprove}>Approve</button>
-    );
-
-    const blockButton = (
-      <button className="LanDevices__Device__action" onClick={props.onToggleInternet}>{device.blocked? 'Unblock': 'Block'}</button>
-    );
-
-    const removeButton = (
-      <button className="LanDevices__Device__action" onClick={props.onRemove}>Remove</button>
-    );
-    
     return (
       <div className={className} onMouseDown={this.onTapStart} onMouseUp={this.onTapEnd} onTouchStart={this.onTapStart} onTouchEnd={this.onTapEnd}>
         <div className="LanDevices__Device__icon">
@@ -91,11 +118,9 @@ export default class Device extends Component {
         <div className="LanDevices__Device__name">
           { device.deviceName || device.hostName }
         </div>
-        { device.approved? dataComponent: macComponent }
+        { this.renderInfo() }
         <div className="LanDevices__Device__actions">
-          { device.approved && !this.state.showRemove ? blockButton: null}
-          { device.approved && this.state.showRemove ? removeButton: null }
-          { !device.approved ? approveButton: null }
+          { this.renderActions() }
         </div>
       </div>
     );

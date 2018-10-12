@@ -51,9 +51,10 @@ export default class Device extends Component {
   }
 
   onInfoClick() {
-    if(this.state.info === 'usage') this.setState({ info: 'mac' });
-    if(this.state.info === 'mac') this.setState({ info: 'ip' });
-    if(this.state.info === 'ip') this.setState({ info: 'usage' });
+    const views = ['usage', 'ip', 'mac'];
+    const currentIndex = views.indexOf(this.state.info);
+    const nextView = views[currentIndex + 1] || views[0];
+    this.setState({ info:  nextView });
   }
 
   renderInfo() {

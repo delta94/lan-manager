@@ -33,8 +33,8 @@
     "webpack": "^3.10.0"
   },
   "scripts": {
-    "start": "forever lib/server.js",
-    "build-start-dev": "npm run build && node lib/server.js",
+    "start": "forever lib",
+    "build-start-dev": "npm run build && node lib",
     "start-dev": "run-p build-start-dev watch",
     "build-assets": "run-p compile-src copy webpack",
     "build": "run-s clean build-assets",

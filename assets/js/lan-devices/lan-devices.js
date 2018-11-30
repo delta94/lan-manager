@@ -103,8 +103,10 @@ export default class LanDevices extends Component {
     //Put active devices on top then inactive devices, put the unapproved devices on the bottom
     const activeDevices = devices.filter( device=> device.approved && device.active );
     const inactiveDevices = devices.filter( device=> device.approved && !device.active );
+    const inactiveDevicesWithData = inactiveDevices.filter( device=> device.downloadBytes || device.uploadBytes );
+    const inactiveDevicesWithoutData = inactiveDevices.filter( device=> !device.downloadBytes && !device.uploadBytes );
     const unapprovedDevices = devices.filter( device=> !device.approved );
-    return [...activeDevices, ...inactiveDevices, ...unapprovedDevices];
+    return [ ...activeDevices, ...inactiveDevicesWithData, ...inactiveDevicesWithoutData, ...unapprovedDevices ];
   }
 
   async loadDevices() {

@@ -42,7 +42,7 @@ export default class Device extends Component {
     this.setState({ isTouching: true });
     this.tapTimer = setTimeout(()=> {
       if(this.state.isTouching) this.setState({ showRemove: !this.state.showRemove });
-    }, 3*1000 ); //Show the remove button on click and hold longer than 3 seconds
+    }, 1000 ); //Show the remove button on click and hold longer than a second
   }
 
   onTapEnd() {

@@ -41,7 +41,7 @@ export default class Connections extends Component {
     const { connectionName } = connection;
     const response = await fetch(`/api/connections/refresh/${connectionName}`, { method: 'post' });
     const json = await response.json();
-    
+
     if(json.error)  {
       let error = new Error(json.message);
       error.data = json.data;
@@ -51,7 +51,7 @@ export default class Connections extends Component {
 
     await this.loadConnections();
   }
-  
+
   async onPreferClick(connection) {
     //Give some time for actions to complete before reloading data
     this.restartMonitor();
@@ -80,7 +80,7 @@ export default class Connections extends Component {
   async loadConnections() {
     const response = await fetch("/api/connections");
     const json = await response.json();
-    
+
     if(json.error)  {
       let error = new Error(json.message);
       error.data = json.data;
@@ -88,7 +88,7 @@ export default class Connections extends Component {
       console.error(error);
     }
 
-    this.state.connections = json.data;
+    this.state.connections = json.data.reverse();
     this.setState(this.state);
   }
 

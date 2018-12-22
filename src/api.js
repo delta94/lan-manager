@@ -20,7 +20,7 @@ router.get('/devices', wrapAsync(async (req, res, next)=> {
 router.get('/connections', wrapAsync(async (req, res, next)=> {
   const allInterfaces = await mikrotik.executeCommandOnRouter('/interface/print');
   const pppoeInterfaces = allInterfaces.filter( iface => iface.name.startsWith('PPPoE'));
-  
+
   const allRoutes = await mikrotik.executeCommandOnRouter('/ip/route/print');
   const staticPppoeRoutes = allRoutes.filter( route => mikrotik.convertStringToBoolean(route.static) && route.gateway.startsWith('PPPoE'));
 
@@ -50,11 +50,11 @@ router.get('/connections', wrapAsync(async (req, res, next)=> {
 router.post('/connections/prefer/:interfaceName', wrapAsync(async (req, res, next)=> {
   const allInterfaces = await mikrotik.executeCommandOnRouter('/interface/print');
   const pppoeInterfaces = allInterfaces.filter( iface => iface.name.startsWith('PPPoE'));
-  
+
   //Only PPPoE interfaces can be preferred
   const iface = pppoeInterfaces.find( iface => iface.name === req.params.interfaceName);
   if(!iface) return res.apiFail({ message: 'Invalid Interface Name'});
-  
+
   const allRoutes = await mikrotik.executeCommandOnRouter('/ip/route/print');
   const staticPppoeRoutes = allRoutes.filter( route => mikrotik.convertStringToBoolean(route.static) && route.gateway.startsWith('PPPoE'));
 
@@ -71,7 +71,7 @@ router.post('/connections/prefer/:interfaceName', wrapAsync(async (req, res, nex
 router.post('/connections/refresh/:interfaceName', wrapAsync(async (req, res, next)=> {
   const allInterfaces = await mikrotik.executeCommandOnRouter('/interface/print');
   const pppoeInterfaces = allInterfaces.filter( iface => iface.name.startsWith('PPPoE'));
-  
+
   //Only PPPoE interfaces can be refreshed
   const iface = pppoeInterfaces.find( iface => iface.name === req.params.interfaceName);
   if(!iface) return res.apiFail({ message: 'Invalid Interface Name'});
@@ -166,7 +166,7 @@ router.post('/lan-devices/remove/:deviceMac', wrapAsync(async (req, res, next)=>
   const deviceMac = req.params.deviceMac.toUpperCase();
   const lease = await mikrotik.getDhcpLeaseForMac(deviceMac);
   if(!lease) return res.apiFail({ message: 'Unknown device'});
-  
+
   //Remove device from address list
   const addressListItem = await mikrotik.getAddressListItem({ list: 'Allow-Internet', address: lease['address'] });
   if(addressListItem) await mikrotik.executeCommandOnRouter('/ip/firewall/address-list/remove', { '.id': addressListItem['.id'] });
@@ -196,7 +196,7 @@ router.get('/address-list/:list', wrapAsync(async (req, res, next)=> {
   const listName = req.params.list;
   const list = await mikrotik.getAddressList(listName);
   if(!list.length) return res.apiFail({ message: 'Unknown list'});
-  
+
   //Remove dynamic address and unnecessary details
   let addresses = [];
   for(const address of list) {
@@ -209,7 +209,7 @@ router.get('/address-list/:list', wrapAsync(async (req, res, next)=> {
       label: address.comment //Address label is stored in the comment
     });
   }
-  
+
   res.apiSuccess(addresses);
 }));
 

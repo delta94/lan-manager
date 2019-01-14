@@ -228,7 +228,7 @@ router.get('/ad-blocker/status', wrapAsync(async (req, res, next)=> {
   res.apiSuccess({ enabled });
 }));
 
-router.get('/ad-blocker/toggle', wrapAsync(async (req, res, next)=> {
+router.post('/ad-blocker/toggle', wrapAsync(async (req, res, next)=> {
   const result = await mikrotik.executeCommandOnRouter('/ip/dns/print');
   const enabled = result[0].servers.includes('192.168.1.3');
   const newServer = enabled? '1.1.1.1': '192.168.1.3'; //Point to CloudFlare to disable ad blocking

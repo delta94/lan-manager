@@ -221,4 +221,29 @@ router.post('/address-list/:list/:address/toggle', wrapAsync(async (req, res, ne
   res.apiSuccess({ message: `Toggled address`});
 }));
 
+router.get('/ad-blocker/status', wrapAsync(async (req, res, next)=> {
+  //Ad blocker is enabled if dns ip is pointing to home server
+  const result = await mikrotik.executeCommandOnRouter('/ip/dns/print');
+  const enabled = result[0].servers.includes('192.168.1.3');
+  res.apiSuccess({ enabled });
+}));
+
+router.get('/ad-blocker/toggle', wrapAsync(async (req, res, next)=> {
+  const result = await mikrotik.executeCommandOnRouter('/ip/dns/print');
+  const enabled = result[0].servers.includes('192.168.1.3');
+  const newServer = enabled? '1.1.1.1': '192.168.1.3'; //Point to CloudFlare to disable ad blocking
+  await mikrotik.executeCommandOnRouter('/ip/dns/set', { servers: newServer });
+  await mikrotik.executeCommandOnRouter('/ip/dns/cache/flush');
+
+  //Toggle net-watch rule to prevent it from reverting dns settings
+  const rules = await mikrotik.executeCommandOnRouter('/tool/netwatch/print');
+  const rule = rules.find(rule=> rule.comment.includes('Change DNS'));
+  await mikrotik.executeCommandOnRouter('/tool/netwatch/set', {
+    '.id': rule['.id'],
+    disabled: mikrotik.convertBooleanToYesNo(newServer === '1.1.1.1')
+  });
+
+  res.apiSuccess({ enabled: !enabled });
+}));
+
 export default router;

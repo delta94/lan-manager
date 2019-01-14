@@ -21,13 +21,13 @@ export async function getConnection() {
 export async function getChannel(name) {
   const connection = await getConnection();
   if(!name) name = uuid.v4();
-  const channel = connection.openChannel(name);  
+  const channel = connection.openChannel(name);
   channel.closeOnDone(true);
   return channel;
 }
 
 export async function executeCommandOnRouter(command, data) {
-  const channel = await getChannel();  
+  const channel = await getChannel();
   return new Promise((resolve, reject)=> {
     channel.write(command, data);
     channel.on('done', ({ data })=> {

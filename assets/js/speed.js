@@ -45,10 +45,10 @@ export default class Speed extends Component {
     this.connectionTimer = setInterval(async ()=> {
       const response = await fetch(`/api/throughput/ether2-LAN`);
       const { data } = await response.json();
-      
+
       this.state.speed = { upload: data.rxSpeed, download: data.txSpeed };
       this.state.speedHistory.upload.push(data.rxSpeed);
-      this.state.speedHistory.download.push(data.rxSpeed);
+      this.state.speedHistory.download.push(data.txSpeed);
       this.trimSpeedHistory();
 
       this.setState(this.state);
@@ -58,7 +58,7 @@ export default class Speed extends Component {
   stopConnectionMonitor() {
     clearInterval(this.connectionTimer);
   }
- 
+
   render() {
     return (
       <div className="Speed">
@@ -75,8 +75,8 @@ export default class Speed extends Component {
           </div>
           <div className="Speed__unit">
             { this.parseBytes(this.state.speed.upload).unit }
-          </div>        
-        </div>      
+          </div>
+        </div>
         <div className="Speed__download">
           <div className="Speed__speed">
             <i className="Speed__icon icon-arrow_downward"></i>
@@ -90,7 +90,7 @@ export default class Speed extends Component {
           </div>
           <div className="Speed__unit">
             { this.parseBytes(this.state.speed.download).unit }
-          </div>  
+          </div>
         </div>
       </div>
     );

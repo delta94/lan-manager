@@ -11,10 +11,13 @@
     "uuid": "^3.3.2"
   },
   "scripts": {
-    "start": "forever lib",
-    "start-dev": "npm run build && node src",
-    "build": "webpack",
-    "watch": "webpack --watch"
+    "start": "forever src",
+    "start-dev": "webpack && node src",
+    "watch": "webpack --watch",
+    "docker-build": "webpack && docker build -t subash/lan-manager:latest .",
+    "docker-publish": "docker push subash/lan-manager:latest",
+    "docker-build-publish": "npm run docker-build && npm run docker-publish",
+    "start-container": "docker run -p 9000:9000 -v $PWD/config.js:/app/config.js subash/lan-manager:latest"
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",

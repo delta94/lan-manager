@@ -1,9 +1,9 @@
 module.exports = {
-  entry: './app/index.js',
+  entry: './app/src/app.js',
   mode: 'development',
   output: {
     path: __dirname,
-    filename: 'app.build.js'
+    filename: 'app/static/app.build.js'
   },
   module: {
     rules: [

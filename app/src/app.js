@@ -5,7 +5,7 @@ import Speed from './speed'
 import Connections from './connections/connections';
 import LanDevices from './lan-devices/lan-devices';
 import AddressList from './address-list/address-list';
-import './scss/style.scss';
+import '../scss/style.scss';
 
 class App extends Component {
 

@@ -7,7 +7,7 @@ npm run build
 HASH="$(git rev-parse --short HEAD)"
 
 #Build container then tag with commit hash
-docker build -t subash/sticky-dns:$HASH .
+docker build -t subash/lan-manager:$HASH .
 
 #Publish container
-docker push subash/sticky-dns:$HASH
+docker push subash/lan-manager:$HASH

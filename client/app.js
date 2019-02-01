@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import "regenerator-runtime/runtime";
 import DeviceMonitor from './device-monitor/device-monitor';
 import Speed from './speed'
 import Connections from './connections/connections';
 import LanDevices from './lan-devices/lan-devices';
 import AddressList from './address-list/address-list';
-import "../scss/style.scss";
+import './scss/style.scss';
 
 class App extends Component {
 
@@ -71,7 +70,7 @@ class App extends Component {
 
   renderLanDevicesView() {
     return (
-      <div className="main-view__section main-view__section--lan-devices">   
+      <div className="main-view__section main-view__section--lan-devices">
         <h2 className="main-view__title">Connected Devices</h2>
         <div className="main-view__section-content">
           <LanDevices />
@@ -87,7 +86,7 @@ class App extends Component {
       </div>
     )
   }
- 
+
   render() {
     return (
       <div>

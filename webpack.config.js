@@ -1,12 +1,12 @@
-const webpack = require("webpack");
-let plugins = [];
+const path = require('path');
 
 module.exports = {
-  entry: './assets/js/app.js',
+  entry: './client/app.js',
+  mode: 'development',
   output: {
-    filename: './public/js/app.js'
+    path: path.resolve(__dirname, './client'),
+    filename: 'app.build.js'
   },
-  plugins: plugins,
   module: {
     rules: [
       {
@@ -16,17 +16,7 @@ module.exports = {
           loader: 'babel-loader',
           options: {
             presets: [
-              ['env', {
-                "targets": {
-                  "browsers": ["last 3 versions", "safari >= 7"]
-                }
-              }]
-            ],
-            plugins: [
-              require('babel-plugin-syntax-jsx'),
-              require('babel-plugin-transform-react-jsx'),
-              require('babel-plugin-syntax-object-rest-spread'),
-              require('babel-plugin-transform-object-rest-spread')
+              '@babel/preset-react'
             ]
           }
         }
@@ -34,16 +24,16 @@ module.exports = {
       {
         test: /\.scss$/,
         use: [
-          { loader: "style-loader" }, // creates style nodes from JS strings
-          { loader: "css-loader" },// translates CSS into CommonJS
-          { loader: "sass-loader" } // compiles Sass to CSS
+          { loader: 'style-loader' }, // creates style nodes from JS strings
+          { loader: 'css-loader' },// translates CSS into CommonJS
+          { loader: 'sass-loader' } // compiles Sass to CSS
         ]
       },
       {
         test: /\.css$/,
         use: [
-          { loader: "style-loader" },
-          { loader: "css-loader" }
+          { loader: 'style-loader' },
+          { loader: 'css-loader' }
         ]
       },
       {

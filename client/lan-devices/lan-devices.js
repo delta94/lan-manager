@@ -42,13 +42,13 @@ export default class LanDevices extends Component {
     const { mac } = device;
     const deviceName = prompt('Enter a name for the device', device.deviceName || device.hostName);
     if(!deviceName) return;
-    
+
     const data = new URLSearchParams();
     data.set('deviceName', deviceName);
 
     const response = await fetch(`/api/lan-devices/approve/${mac}`, { method: 'post', body: data });
     const json = await response.json();
-    
+
     if(json.error)  {
       let error = new Error(json.message);
       error.data = json.data;
@@ -66,11 +66,11 @@ export default class LanDevices extends Component {
     //Change the state for instant feedback
     this.state.devices = this.state.devices.filter( d => d.mac !== device.mac );
     this.setState(this.state);
-    
+
     const { mac } = device;
     const response = await fetch(`/api/lan-devices/remove/${mac}`, { method: 'post' });
     const json = await response.json();
-    
+
     if(json.error)  {
       let error = new Error(json.message);
       error.data = json.data;
@@ -86,11 +86,11 @@ export default class LanDevices extends Component {
     //Toggle the state for instant feedback
     device.blocked = !device.blocked;
     this.setState(this.state);
-    
+
     const { mac } = device;
     const response = await fetch(`/api/lan-devices/toggle-internet/${mac}`, { method: 'post' });
     const json = await response.json();
-    
+
     if(json.error)  {
       let error = new Error(json.message);
       error.data = json.data;
@@ -112,7 +112,7 @@ export default class LanDevices extends Component {
   async loadDevices() {
     const response = await fetch("/api/lan-devices");
     const json = await response.json();
-    
+
     if(json.error)  {
       let error = new Error(json.message);
       error.data = json.data;
@@ -145,7 +145,7 @@ export default class LanDevices extends Component {
               onRemove={this.onRemove.bind(this, device)}
             />;
           })}
-        </div>      
+        </div>
       </div>
     );
   }

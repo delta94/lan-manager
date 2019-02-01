@@ -1,4 +1,5 @@
-export default function(req, res, next) {
+module.exports = (req, res, next)=> {
+
   res.apiSuccess = (data)=> {
     res.json({
       success: true,

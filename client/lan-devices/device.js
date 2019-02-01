@@ -8,7 +8,7 @@ export default class Device extends Component {
       showRemove: false,
       info: 'usage'
     };
-  
+
     this.onTapStart = this.onTapStart.bind(this);
     this.onTapEnd = this.onTapEnd.bind(this);
     this.onInfoClick = this.onInfoClick.bind(this);
@@ -19,7 +19,7 @@ export default class Device extends Component {
     const GB = 1024 ** 3;
     const MB = 1024 ** 2;
     const KB = 1024;
-  
+
     if(bytes >= GB) {
       total = bytes/GB;
       unit = 'GB';
@@ -30,7 +30,7 @@ export default class Device extends Component {
       total = bytes/KB;
       unit = 'KB';
     }
-  
+
     return { total, unit };
   }
 

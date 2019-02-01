@@ -1,18 +1,20 @@
-FROM node:8
+FROM node:10
 
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
+RUN mkdir -p /app
+WORKDIR /app
 
 ENV NODE_ENV=production
 ENV NPM_CONFIG_LOGLEVEL=warn
 
-COPY package.json /usr/src/app/
-COPY package-lock.json /usr/src/app/
+COPY package.json /app/
+COPY package-lock.json /app/
 RUN npm install
 
-COPY webpack.config.js /usr/src/app/
-COPY assets /usr/src/app/assets
-COPY src /usr/src/app/src
+COPY src /app/src
+
+COPY webpack.config.js /app/
+COPY assets /app/assets
+
 RUN npm run build
 
 EXPOSE 9000

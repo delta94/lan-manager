@@ -42,7 +42,7 @@ export default class AddressList extends Component {
 
     //Give some time for actions to complete before reloading data
     this.restartMonitor();
-    
+
     //Toggle the state for instant feedback
     listItem.disabled = !listItem.disabled;
     this.setState(this.state);
@@ -61,7 +61,7 @@ export default class AddressList extends Component {
   async loadList() {
     const response = await fetch(`/api/address-list/${this.props.list}`);
     const json = await response.json();
-    
+
     if(json.error)  {
       let error = new Error(json.message);
       error.data = json.data;
@@ -85,7 +85,7 @@ export default class AddressList extends Component {
             icon={this.props.icon}
             onToggleClick={this.onToggleClick.bind(this, listItem)}
           />;
-        })}   
+        })}
       </div>
     );
   }

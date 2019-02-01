@@ -1,4 +1,4 @@
-@import "../icomoon/style.css";
+@import "../../assets/icomoon/style.css";
 @import "variables";
 @import "base";
 @import "header";
@@ -69,7 +69,7 @@
       grid-area: devices;
     }
   }
-  
+
   &__title {
     font-weight: normal;
     text-align: center;

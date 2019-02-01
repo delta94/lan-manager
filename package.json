@@ -1,61 +1,34 @@
 {
-  "name": "home-lan",
+  "name": "lan-manager",
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-loader": "^7.1.2",
-    "babel-plugin-syntax-jsx": "^6.18.0",
-    "babel-plugin-syntax-object-rest-spread": "^6.13.0",
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-plugin-transform-react-jsx": "^6.24.1",
-    "babel-polyfill": "^6.26.0",
-    "babel-preset-env": "^1.7.0",
-    "body-parser": "^1.18.3",
-    "chokidar-cli": "^1.2.1",
     "core-decorators": "^0.20.0",
-    "css-loader": "^0.28.8",
-    "express": "^4.15.4",
+    "express": "^4.16.4",
     "forever": "^0.15.3",
     "mikronode": "^2.3.11",
-    "node-sass": "^4.11.0",
-    "npm-run-all": "^4.1.2",
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0",
-    "react-sparklines": "^1.7.0",
-    "regenerator-runtime": "^0.11.1",
-    "rxjs": "^5.5.6",
-    "sass-loader": "^6.0.6",
-    "style-loader": "^0.19.1",
-    "url-loader": "^0.6.2",
-    "uuid": "^3.1.0",
-    "webpack": "^3.10.0"
+    "rxjs": "^5.5.12",
+    "uuid": "^3.3.2"
   },
   "scripts": {
     "start": "forever lib",
-    "build-start-dev": "npm run build && node lib",
-    "start-dev": "run-p build-start-dev watch",
-    "build-assets": "run-p compile-src copy webpack",
-    "build": "run-s clean build-assets",
-    "clean": "npm run clean-lib && npm run clean-public",
-    "compile-src": "babel src --out-dir lib",
-    "clean-lib": "rm -r ./lib || true",
-    "copy-images": "cp -r assets/img/ public/img",
-    "copy-html": "cp assets/index.html public/index.html",
-    "copy-webmanifest": "cp assets/manifest.webmanifest public/manifest.webmanifest",
-    "copy": "run-p copy-html copy-webmanifest copy-images",
-    "webpack": "webpack",
-    "watch-sass": "chokidar 'assets/scss/**.scss' -c 'npm run webpack'",
-    "watch-js": "chokidar 'assets/js/**.js' -c 'npm run webpack'",
-    "watch": "run-p watch-*",
-    "clean-public": "(rm -r ./public || true) && mkdir public"
+    "start-dev": "npm run build && node src",
+    "build": "webpack",
+    "watch": "webpack --watch"
   },
-  "babel": {
-    "plugins": [
-      "transform-es2015-modules-commonjs",
-      "babel-plugin-syntax-object-rest-spread",
-      "babel-plugin-transform-object-rest-spread"
-    ]
+  "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.5",
+    "css-loader": "^2.1.0",
+    "node-sass": "^4.11.0",
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0",
+    "react-sparklines": "^1.7.0",
+    "sass-loader": "^7.1.0",
+    "style-loader": "^0.23.1",
+    "url-loader": "^1.1.2",
+    "webpack": "^4.29.0",
+    "webpack-cli": "^3.2.1"
   }
 }

@@ -20,7 +20,7 @@ export default class Connection extends Component {
   componentWillUnmount() {
     this.unlistenHover();
   }
-  
+
   onMouseOver(e) {
     if(!e.originalTarget.classList.contains('Connection__action')) {
       this.state.hover = true;
@@ -47,7 +47,7 @@ export default class Connection extends Component {
 
   onRestartClick(e) {
     e.stopPropagation();
-    this.props.onRestartClick();    
+    this.props.onRestartClick();
   }
 
   render() {

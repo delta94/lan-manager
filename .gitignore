@@ -1,5 +1,5 @@
 node_modules
 public
-lib
 .DS_Store
-.env
+config.js
+client/app.build.js

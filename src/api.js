@@ -1,9 +1,8 @@
-import express from 'express';
-import * as mikrotik from './utils/mikrotik';
-import isReachable from './utils/is-reachable';
-import wrapAsync from './utils/wrap-async-middleware';
-import devices from './devices';
-
+const express = require('express');
+const mikrotik = require('./utils/mikrotik');
+const isReachable = require('./utils/is-reachable');
+const wrapAsync = require('./utils/wrap-async-middleware');
+const devices = require('./devices');
 const router = new express.Router();
 
 router.get('/devices', wrapAsync(async (req, res, next)=> {
@@ -246,4 +245,4 @@ router.post('/ad-blocker/toggle', wrapAsync(async (req, res, next)=> {
   res.apiSuccess({ enabled: !enabled });
 }));
 
-export default router;
+module.exports = router;

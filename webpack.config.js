@@ -3,7 +3,7 @@ module.exports = {
   mode: 'development',
   output: {
     path: __dirname,
-    filename: 'app/static/app.build.js'
+    filename: 'static/app.build.js'
   },
   module: {
     rules: [

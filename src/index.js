@@ -9,7 +9,7 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(middlewares);
 app.use('/api', api);
-app.use(express.static(path.resolve(__dirname, '../app/static')));
+app.use(express.static(path.resolve(__dirname, '../static')));
 app.listen(config.port);
 
 console.log(`Listening on port ${config.port}`);

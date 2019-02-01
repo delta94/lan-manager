@@ -12,4 +12,4 @@ app.use('/api', api);
 app.use(express.static(path.resolve(__dirname, '../static')));
 app.listen(9000);
 
-console.log(`Listening on port ${9000}`);
+console.log(`Listening on port 9000`);

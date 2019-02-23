@@ -1,0 +1,22 @@
+.Wifi {
+  text-align: center;
+  padding: 25px 15px;
+  color: inherit;
+  background: $color-accent;
+  border-radius: 4px;
+  display: grid;
+  grid-gap: 10px;
+  min-height: 100%;
+
+  &__icon {
+    font-size: 3rem;
+  }
+
+  &__name {
+    font-size: 3rem;
+  }
+
+  &__password {
+    opacity: .8;
+  }
+}

@@ -4,6 +4,7 @@ import DeviceMonitor from './device-monitor/device-monitor';
 import Speed from './speed'
 import Connections from './connections/connections';
 import AddressList from './address-list/address-list';
+import Wifi from './wifi';
 import '../scss/style.scss';
 
 class App extends Component {
@@ -34,12 +35,12 @@ class App extends Component {
     );
   }
 
-  renderDistractionFilterView() {
+  renderWifiView() {
     return (
-      <div className="main-view__section main-view__section--distraction-filter">
-        <h2 className="main-view__title">Distraction Filter</h2>
+      <div className="main-view__section main-view__section--wifi">
+        <h2 className="main-view__title">Guest Wifi</h2>
         <div className="main-view__section-content">
-          <AddressList list="Block-Distractions" icon="bullhorn"/>
+          <Wifi />
         </div>
       </div>
     );
@@ -67,17 +68,6 @@ class App extends Component {
     );
   }
 
-  renderLanDevicesView() {
-    return (
-      <div className="main-view__section main-view__section--lan-devices">
-        <h2 className="main-view__title">Connected Devices</h2>
-        <div className="main-view__section-content">
-          <LanDevices />
-        </div>
-      </div>
-    );
-  }
-
   renderHeader() {
     return (
       <div className="header">
@@ -94,6 +84,7 @@ class App extends Component {
           { this.renderConnectionView() }
           { this.renderSpeedView() }
           { this.renderVPNView() }
+          { this.renderWifiView() }
           { this.renderDeviceView() }
         </div>
       </div>

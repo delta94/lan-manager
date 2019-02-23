@@ -6,6 +6,7 @@
 @import "speed";
 @import "connections";
 @import "address-list";
+@import "wifi";
 
 #app {
   background: #22262E;
@@ -24,7 +25,7 @@
   grid-template-rows: repeat(3, max-content);
   grid-template-areas:
     "connections throughput"
-    "vpn vpn"
+    "vpn wifi"
     "lan-devices lan-devices"
     "devices devices";
 
@@ -35,6 +36,7 @@
     "connections"
     "throughput"
     "vpn"
+    "wifi"
     "distraction-filter"
     "lan-devices"
     "devices";
@@ -54,6 +56,10 @@
 
     &--vpn {
       grid-area: vpn;
+    }
+
+    &--wifi {
+      grid-area: wifi;
     }
 
     &--distraction-filter {

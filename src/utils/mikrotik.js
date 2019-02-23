@@ -21,7 +21,7 @@ async function getChannel(name) {
   return channel;
 }
 
-async function executeCommandOnRouter(command, data) {
+async function requestRouter(command, data) {
   const channel = await getChannel();
   return new Promise((resolve, reject)=> {
     channel.write(command, data);
@@ -31,16 +31,16 @@ async function executeCommandOnRouter(command, data) {
   });
 }
 
-function convertBooleanToYesNo(value) {
+function booleanToString(value) {
   return value ? 'yes': 'no';
 }
 
-function convertStringToBoolean(value) {
+function stringToBoolean(value) {
   return value === 'true' || value === 'yes';
 }
 
 async function getAddressList(list) {
-  const addressList = await executeCommandOnRouter('/ip/firewall/address-list/print');
+  const addressList = await requestRouter('/ip/firewall/address-list/print');
   return addressList.filter( item=> item.list === list);
 }
 
@@ -52,17 +52,15 @@ async function getAddressListItem({ list, address }) {
 async function toggleAddressListItem({ list, address }) {
   const addressListItem = await getAddressListItem({ list, address });
   if(!addressListItem) return;
-  const currentStatus = convertStringToBoolean(addressListItem.disabled);
-  await executeCommandOnRouter('/ip/firewall/address-list/set', { '.id': addressListItem['.id'], disabled: convertBooleanToYesNo(!currentStatus) });
+  const currentStatus = stringToBoolean(addressListItem.disabled);
+  await requestRouter('/ip/firewall/address-list/set', { '.id': addressListItem['.id'], disabled: booleanToString(!currentStatus) });
   return await getAddressListItem({ list, address });
 }
 
 module.exports = {
-  getConnection,
-  getChannel,
-  executeCommandOnRouter,
-  convertBooleanToYesNo,
-  convertStringToBoolean,
+  request: requestRouter,
+  booleanToString,
+  stringToBoolean,
   getAddressList,
   getAddressListItem,
   toggleAddressListItem

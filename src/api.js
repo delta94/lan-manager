@@ -17,11 +17,11 @@ router.get('/devices', wrapAsync(async (req, res, next)=> {
 }));
 
 router.get('/connections', wrapAsync(async (req, res, next)=> {
-  const allInterfaces = await mikrotik.executeCommandOnRouter('/interface/print');
+  const allInterfaces = await mikrotik.request('/interface/print');
   const pppoeInterfaces = allInterfaces.filter( iface => iface.name.startsWith('PPPoE'));
 
-  const allRoutes = await mikrotik.executeCommandOnRouter('/ip/route/print');
-  const staticPppoeRoutes = allRoutes.filter( route => mikrotik.convertStringToBoolean(route.static) && route.gateway.startsWith('PPPoE'));
+  const allRoutes = await mikrotik.request('/ip/route/print');
+  const staticPppoeRoutes = allRoutes.filter( route => mikrotik.stringToBoolean(route.static) && route.gateway.startsWith('PPPoE'));
 
   //Preferred route is the one with lowest distance value
   let preferredRoute = staticPppoeRoutes[0];
@@ -37,9 +37,9 @@ router.get('/connections', wrapAsync(async (req, res, next)=> {
       label: iface.name.split('-')[1], //Interface names look like `PPPoE-ISPName`,
       connectionName: iface.name,
       preferred: preferredRoute.gateway === iface.name,
-      running: mikrotik.convertStringToBoolean(iface.running),
-      disabled: mikrotik.convertStringToBoolean(iface.disabled),
-      active: mikrotik.convertStringToBoolean(route.active)
+      running: mikrotik.stringToBoolean(iface.running),
+      disabled: mikrotik.stringToBoolean(iface.disabled),
+      active: mikrotik.stringToBoolean(route.active)
     };
   });
 
@@ -47,28 +47,28 @@ router.get('/connections', wrapAsync(async (req, res, next)=> {
 }));
 
 router.post('/connections/prefer/:interfaceName', wrapAsync(async (req, res, next)=> {
-  const allInterfaces = await mikrotik.executeCommandOnRouter('/interface/print');
+  const allInterfaces = await mikrotik.request('/interface/print');
   const pppoeInterfaces = allInterfaces.filter( iface => iface.name.startsWith('PPPoE'));
 
   //Only PPPoE interfaces can be preferred
   const iface = pppoeInterfaces.find( iface => iface.name === req.params.interfaceName);
   if(!iface) return res.apiFail({ message: 'Invalid Interface Name'});
 
-  const allRoutes = await mikrotik.executeCommandOnRouter('/ip/route/print');
-  const staticPppoeRoutes = allRoutes.filter( route => mikrotik.convertStringToBoolean(route.static) && route.gateway.startsWith('PPPoE'));
+  const allRoutes = await mikrotik.request('/ip/route/print');
+  const staticPppoeRoutes = allRoutes.filter( route => mikrotik.stringToBoolean(route.static) && route.gateway.startsWith('PPPoE'));
 
   //Setting route distance to 2 prefers the route and setting the route distance higher makes the route less preferred
   for(const route of staticPppoeRoutes) {
     //Set the selected interface route distance to 2 all other routes to 3
     const distance = route.gateway === iface.name ? 2: 3;
-    await mikrotik.executeCommandOnRouter('/ip/route/set', { '.id': route['.id'], distance });
+    await mikrotik.request('/ip/route/set', { '.id': route['.id'], distance });
   }
 
   res.apiSuccess({ message: `Preferred ${iface.name}`});
 }));
 
 router.post('/connections/refresh/:interfaceName', wrapAsync(async (req, res, next)=> {
-  const allInterfaces = await mikrotik.executeCommandOnRouter('/interface/print');
+  const allInterfaces = await mikrotik.request('/interface/print');
   const pppoeInterfaces = allInterfaces.filter( iface => iface.name.startsWith('PPPoE'));
 
   //Only PPPoE interfaces can be refreshed
@@ -76,17 +76,17 @@ router.post('/connections/refresh/:interfaceName', wrapAsync(async (req, res, ne
   if(!iface) return res.apiFail({ message: 'Invalid Interface Name'});
 
   //Refresh the interface
-  await mikrotik.executeCommandOnRouter('/interface/set', { '.id': iface['.id'], disabled: 'yes' });
-  await mikrotik.executeCommandOnRouter('/interface/set', { '.id': iface['.id'], disabled: 'no' });
+  await mikrotik.request('/interface/set', { '.id': iface['.id'], disabled: 'yes' });
+  await mikrotik.request('/interface/set', { '.id': iface['.id'], disabled: 'no' });
 
   res.apiSuccess({ message: `Refreshed ${iface.name}`});
 }));
 
 router.get('/throughput/:interfaceName', wrapAsync(async (req, res, next)=> {
-  const allInterfaces = await mikrotik.executeCommandOnRouter('/interface/print');
+  const allInterfaces = await mikrotik.request('/interface/print');
   const iface = allInterfaces.find( iface => iface.name === req.params.interfaceName);
   if(!iface) return res.apiFail({ message: 'Invalid Interface Name'});
-  let [ stats ] = await mikrotik.executeCommandOnRouter('/interface/monitor-traffic', { interface: iface.name, once: true });
+  let [ stats ] = await mikrotik.request('/interface/monitor-traffic', { interface: iface.name, once: true });
   res.apiSuccess({
     rxSpeed: Number.parseInt(stats['rx-bits-per-second'], 10),
     txSpeed: Number.parseInt(stats['tx-bits-per-second'], 10)
@@ -98,20 +98,17 @@ router.get('/address-list/:list', wrapAsync(async (req, res, next)=> {
   const list = await mikrotik.getAddressList(listName);
   if(!list.length) return res.apiFail({ message: 'Unknown list'});
 
-  //Remove dynamic address and unnecessary details
-  let addresses = [];
-  for(const address of list) {
-    const dynamic = mikrotik.convertStringToBoolean(address.dynamic);
-    const disabled = mikrotik.convertStringToBoolean(address.disabled);
-    if(dynamic) continue;
-    addresses.push({
-      disabled,
+  //Remove dynamic addresses
+  const addresses = list.filter(item=> !mikrotik.stringToBoolean(item.dynamic));
+
+  //Respond with status address and label
+  res.apiSuccess(addresses.map(address=> {
+    return {
+      disabled: mikrotik.stringToBoolean(address.disabled),
       address: address.address,
       label: address.comment //Address label is stored in the comment
-    });
-  }
-
-  res.apiSuccess(addresses);
+    }
+  }));
 }));
 
 router.post('/address-list/:list/:address/toggle', wrapAsync(async (req, res, next)=> {

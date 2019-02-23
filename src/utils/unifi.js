@@ -24,7 +24,7 @@ async function loginIfRequired() {
   if(!(await isLoggedIn())) await login();
 }
 
-async function requestSite(path, { options }) {
+async function requestSite(path, options) {
   await loginIfRequired();
   const res = await request(`/api/s/${config.unifi.site}${path}`, options);
   if(res.meta.rc !== 'ok') throw new Error(res.meta.msg);

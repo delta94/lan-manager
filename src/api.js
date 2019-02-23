@@ -3,6 +3,8 @@ const mikrotik = require('./utils/mikrotik');
 const isReachable = require('./utils/is-reachable');
 const wrapAsync = require('./utils/wrap-async-middleware');
 const devices = require('./devices');
+const unifi = require('./utils/unifi');
+const password = require('./utils/password');
 const router = new express.Router();
 
 router.get('/devices', wrapAsync(async (req, res, next)=> {
@@ -117,6 +119,24 @@ router.post('/address-list/:list/:address/toggle', wrapAsync(async (req, res, ne
   const result = mikrotik.toggleAddressListItem({ list, address });
   if(!result) return res.apiFail({ message: 'Invalid address or list'});
   res.apiSuccess({ message: `Toggled address`});
+}));
+
+router.get('/guest-wifi', wrapAsync(async (req, res, next)=> {
+  const wifis = await unifi.request('/rest/wlanconf');
+  const wifi = wifis.find(wifi=> wifi.is_guest);
+  if(!wifi || !wifi.enabled) res.apiFail({ message: 'Guest network disabled' });
+  res.apiSuccess({ name: wifi.name, password: wifi.x_passphrase });
+}));
+
+router.post('/guest-wifi/reset-password', wrapAsync(async (req, res, next)=> {
+  const wifis = await unifi.request('/rest/wlanconf');
+  const wifi = wifis.find(wifi=> wifi.is_guest);
+  if(!wifi || !wifi.enabled) res.apiFail({ message: 'Guest network disabled' });
+  const pw = password.generate();
+  await unifi.request(`/rest/wlanconf/${wifi._id}`, {
+    method: 'PUT', body: { x_passphrase: pw }
+  });
+  res.apiSuccess({ name: wifi.name, password: pw });
 }));
 
 module.exports = router;

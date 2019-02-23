@@ -39,11 +39,6 @@ function convertStringToBoolean(value) {
   return value === 'true' || value === 'yes';
 }
 
-async function getDhcpLeaseForMac(deviceMac) {
-  const dhcpLeases = await executeCommandOnRouter('/ip/dhcp-server/lease/print');
-  return dhcpLeases.find( lease => lease['mac-address'] === deviceMac);
-}
-
 async function getAddressList(list) {
   const addressList = await executeCommandOnRouter('/ip/firewall/address-list/print');
   return addressList.filter( item=> item.list === list);
@@ -62,20 +57,13 @@ async function toggleAddressListItem({ list, address }) {
   return await getAddressListItem({ list, address });
 }
 
-async function getQueueForAddress(address) {
-  const queues = await executeCommandOnRouter('/queue/simple/print');
-  return queues.find( item=> item['target'] === `${address}/32`);
-}
-
 module.exports = {
   getConnection,
   getChannel,
   executeCommandOnRouter,
   convertBooleanToYesNo,
   convertStringToBoolean,
-  getDhcpLeaseForMac,
   getAddressList,
   getAddressListItem,
-  toggleAddressListItem,
-  getQueueForAddress
+  toggleAddressListItem
 };

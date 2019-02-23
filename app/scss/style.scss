@@ -5,7 +5,6 @@
 @import "device-monitor";
 @import "speed";
 @import "connections";
-@import "lan-devices";
 @import "address-list";
 
 #app {
@@ -25,7 +24,7 @@
   grid-template-rows: repeat(3, max-content);
   grid-template-areas:
     "connections throughput"
-    "vpn distraction-filter"
+    "vpn vpn"
     "lan-devices lan-devices"
     "devices devices";
 

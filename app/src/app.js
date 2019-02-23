@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import DeviceMonitor from './device-monitor/device-monitor';
 import Speed from './speed'
 import Connections from './connections/connections';
-import LanDevices from './lan-devices/lan-devices';
 import AddressList from './address-list/address-list';
 import '../scss/style.scss';
 
@@ -95,8 +94,6 @@ class App extends Component {
           { this.renderConnectionView() }
           { this.renderSpeedView() }
           { this.renderVPNView() }
-          { this.renderDistractionFilterView() }
-          { this.renderLanDevicesView() }
           { this.renderDeviceView() }
         </div>
       </div>

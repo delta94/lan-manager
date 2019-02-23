@@ -5,6 +5,7 @@ const request = rp.defaults({
   jar: true,
   simple: false,
   json: true,
+  strictSSL: false,
   baseUrl: config.unifi.address,
 });
 

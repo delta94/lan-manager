@@ -1,3 +1,4 @@
+const path = require('path');
 const rp = require('request-promise-native');
 const config = require('../../config.js');
 
@@ -25,9 +26,9 @@ async function loginIfRequired() {
   if(!(await isLoggedIn())) await login();
 }
 
-async function requestSite(path, options) {
+async function requestSite(_path, options) {
   await loginIfRequired();
-  const res = await request(`/api/s/${config.unifi.site}${path}`, options);
+  const res = await request(path.join('/api/s/default', _path), options);
   if(res.meta.rc !== 'ok') throw new Error(res.meta.msg);
   return res.data;
 }

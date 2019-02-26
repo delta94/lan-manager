@@ -6,7 +6,6 @@ module.exports = {
   },
   unifi: {
     address: 'https://unifi.example.com',
-    site: 'site-id',
     username: 'admin@example.com',
     password: 'password'
   }

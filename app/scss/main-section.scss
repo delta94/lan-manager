@@ -1,0 +1,40 @@
+.MainSection {
+  display: grid;
+  grid-template-rows: auto 1fr;
+
+  &--connections {
+    grid-area: connections;
+  }
+
+  &--speed {
+    grid-area: speed;
+  }
+
+  &--vpn {
+    grid-area: vpn;
+  }
+
+  &--wifi {
+    grid-area: wifi;
+  }
+
+  &--filter-distractions {
+    grid-area: filter-distractions;
+  }
+
+  &--lan-devices {
+    grid-area: lan-devices;
+  }
+
+  &--devices {
+    grid-area: devices;
+  }
+
+  &__title {
+    font-weight: normal;
+    text-align: center;
+    margin: 0;
+    padding: 20px;
+    font-size: 2rem;
+  }
+}

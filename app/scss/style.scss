@@ -1,7 +1,9 @@
 @import "../vendor/icomoon/style.css";
 @import "variables";
 @import "base";
-@import "header";
+@import "main-header";
+@import "main-content";
+@import "main-section";
 @import "device-monitor";
 @import "speed";
 @import "connections";
@@ -10,76 +12,4 @@
 
 #app {
   background: #22262E;
-}
-
-.main-view {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 15px;
-  display: grid;
-  grid-gap: 15px;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: repeat(3, max-content);
-  grid-template-areas:
-    "connections throughput"
-    "vpn wifi"
-    "lan-devices lan-devices"
-    "devices devices";
-
-  @media (max-width: 700px) {
-    grid-template-columns: 1fr;
-    grid-template-rows: repeat(4, max-content);
-    grid-template-areas:
-    "connections"
-    "throughput"
-    "vpn"
-    "wifi"
-    "distraction-filter"
-    "lan-devices"
-    "devices";
-  }
-
-  &__section {
-    display: grid;
-    grid-template-rows: auto 1fr;
-
-    &--connections {
-      grid-area: connections;
-    }
-
-    &--throughput {
-      grid-area: throughput;
-    }
-
-    &--vpn {
-      grid-area: vpn;
-    }
-
-    &--wifi {
-      grid-area: wifi;
-    }
-
-    &--distraction-filter {
-      grid-area: distraction-filter;
-    }
-
-    &--lan-devices {
-      grid-area: lan-devices;
-    }
-
-    &--devices {
-      grid-area: devices;
-    }
-  }
-
-  &__title {
-    font-weight: normal;
-    text-align: center;
-    margin: 0;
-    padding: 20px;
-    font-size: 2rem;
-  }
 }

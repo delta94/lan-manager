@@ -27,7 +27,7 @@ module.exports = function Wifi() {
         <i className="icon-wifi"></i>
       </div>
       <div className="Wifi__name">{name}</div>
-      <div className="Wifi__password">Password: {password}</div>
+      <div className="Wifi__password">{password}</div>
     </div>
   );
 }

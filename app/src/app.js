@@ -7,89 +7,35 @@ import AddressList from './address-list/address-list';
 import Wifi from './wifi';
 import '../scss/style.scss';
 
-class App extends Component {
+function MainSection({ title, children, name }) {
+  return (
+    <div className={`MainSection MainSection--${name}`}>
+      <h2 className="MainSection__title">{title}</h2>
+      <div className="MainSection__content">{children}</div>
+    </div>
+  );
+}
 
-  constructor(props) {
-    super(props);
-  }
-
-  renderDeviceView() {
-    return (
-      <div className="main-view__section main-view__section--devices">
-        <h2 className="main-view__title">Device Monitor</h2>
-        <div className="main-view__section-content">
-          <DeviceMonitor />
-        </div>
-      </div>
-    );
-  }
-
-  renderVPNView() {
-    return (
-      <div className="main-view__section main-view__section--vpn">
-        <h2 className="main-view__title">VPN</h2>
-        <div className="main-view__section-content">
+function App(){
+  return (
+    <>
+      <header className="MainHeader">
+        <h2 className="MainHeader__title">LAN Manager</h2>
+      </header>
+      <div className="MainContent">
+        <MainSection title="Connections" name="connections"><Connections/></MainSection>
+        <MainSection title="Throughput" name="speed"><Speed/></MainSection>
+        <MainSection title="VPN" name="vpn">
           <AddressList list="VPN" icon="shield"/>
-        </div>
+        </MainSection>
+        <MainSection title="Filter Distractions" name="filter-distractions">
+          <AddressList list="Filter-Distractions" icon="shield"/>
+        </MainSection>
+        <MainSection title="Guest Network" name="wifi"><Wifi/></MainSection>
+        <MainSection title="Devices" name="devices"><DeviceMonitor/></MainSection>
       </div>
-    );
-  }
-
-  renderWifiView() {
-    return (
-      <div className="main-view__section main-view__section--wifi">
-        <h2 className="main-view__title">Guest Wifi</h2>
-        <div className="main-view__section-content">
-          <Wifi />
-        </div>
-      </div>
-    );
-  }
-
-  renderConnectionView() {
-    return (
-      <div className="main-view__section main-view__section--connections">
-        <h2 className="main-view__title">Connections</h2>
-        <div className="main-view__section-content">
-          <Connections />
-        </div>
-      </div>
-    );
-  }
-
-  renderSpeedView() {
-    return (
-      <div className="main-view__section main-view__section--throughput">
-        <h2 className="main-view__title">Throughput</h2>
-        <div className="main-view__section-content">
-          <Speed />
-        </div>
-      </div>
-    );
-  }
-
-  renderHeader() {
-    return (
-      <div className="header">
-        <h2 className="header__title">LAN Manager</h2>
-      </div>
-    )
-  }
-
-  render() {
-    return (
-      <div>
-        { this.renderHeader() }
-        <div className="main-view">
-          { this.renderConnectionView() }
-          { this.renderSpeedView() }
-          { this.renderVPNView() }
-          { this.renderWifiView() }
-          { this.renderDeviceView() }
-        </div>
-      </div>
-    );
-  }
+    </>
+  );
 }
 
 ReactDOM.render(<App/>, document.getElementById('app'));

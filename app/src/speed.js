@@ -43,7 +43,7 @@ export default class Speed extends Component {
 
   startMonitor() {
     this.connectionTimer = setInterval(async ()=> {
-      const response = await fetch(`/api/throughput/ether1-LAN`);
+      const response = await fetch(`/api/throughput/ether3-LAN`);
       const { data } = await response.json();
 
       this.state.speed = { upload: data.rxSpeed, download: data.txSpeed };

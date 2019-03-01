@@ -25,12 +25,7 @@ function App(){
       <div className="MainContent">
         <MainSection title="Connections" name="connections"><Connections/></MainSection>
         <MainSection title="Throughput" name="speed"><Speed/></MainSection>
-        <MainSection title="VPN" name="vpn">
-          <AddressList list="VPN" icon="shield"/>
-        </MainSection>
-        <MainSection title="Filter Distractions" name="filter-distractions">
-          <AddressList list="Filter-Distractions" icon="shield"/>
-        </MainSection>
+        <MainSection title="VPN" name="vpn"><AddressList list="VPN" icon="shield"/></MainSection>
         <MainSection title="Guest Network" name="wifi"><Wifi/></MainSection>
         <MainSection title="Devices" name="devices"><DeviceMonitor/></MainSection>
       </div>

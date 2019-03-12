@@ -84,6 +84,21 @@ router.post('/connections/refresh/:interfaceName', wrapAsync(async (req, res, ne
   res.apiSuccess({ message: `Refreshed ${iface.name}`});
 }));
 
+//Return combined speed of all ISP interfaces
+router.get('/throughput', wrapAsync(async (req, res, next)=> {
+  const allInterfaces = await mikrotik.request('/interface/print');
+  const pppoeInterfaces = allInterfaces.filter( iface => iface.name.startsWith('PPPoE'));
+  let rxSpeed = 0, txSpeed = 0;
+
+  for(const iface of pppoeInterfaces) {
+    let [ stats ] = await mikrotik.request('/interface/monitor-traffic', { interface: iface.name, once: true });
+    rxSpeed = rxSpeed + Number.parseInt(stats['rx-bits-per-second'], 10);
+    txSpeed = txSpeed + Number.parseInt(stats['tx-bits-per-second'], 10);
+  }
+
+  res.apiSuccess({ rxSpeed, txSpeed });
+}));
+
 router.get('/throughput/:interfaceName', wrapAsync(async (req, res, next)=> {
   const allInterfaces = await mikrotik.request('/interface/print');
   const iface = allInterfaces.find( iface => iface.name === req.params.interfaceName);

@@ -1,4 +1,5 @@
 const express = require('express');
+const isIp = require('is-ip');
 const mikrotik = require('./utils/mikrotik');
 const isReachable = require('./utils/is-reachable');
 const wrapAsync = require('./utils/wrap-async-middleware');
@@ -19,22 +20,23 @@ router.get('/devices', wrapAsync(async (req, res, next)=> {
 }));
 
 router.get('/connections', wrapAsync(async (req, res, next)=> {
-  const allInterfaces = await mikrotik.request('/interface/print');
-  const pppoeInterfaces = allInterfaces.filter( iface => iface.name.startsWith('PPPoE'));
+  const interfaces = await mikrotik.request('/interface/print');
+  const pppoeInterfaces = interfaces.filter( iface => iface.name.startsWith('PPPoE'));
 
-  const allRoutes = await mikrotik.request('/ip/route/print');
-  const staticPppoeRoutes = allRoutes.filter( route => mikrotik.stringToBoolean(route.static) && route.gateway.startsWith('PPPoE'));
+  //Get routes with `Default` label; Don't use route.gateway because same gateway interface can be shared by other routes
+  const routes = await mikrotik.request('/ip/route/print');
+  const defaultRoutes = routes.filter( route=> route.comment && route.comment.startsWith('Default'));
 
   //Preferred route is the one with lowest distance value
-  let preferredRoute = staticPppoeRoutes[0];
-  for(const route of staticPppoeRoutes) {
+  let preferredRoute = defaultRoutes[0];
+  for(const route of defaultRoutes) {
     if(Number.parseInt(route.distance, 10) < Number.parseInt(preferredRoute.distance, 10)) {
       preferredRoute = route;
     }
   }
 
   const connections = pppoeInterfaces.map( iface => {
-    const route = staticPppoeRoutes.find( route => route.gateway === iface.name);
+    const route = defaultRoutes.find( route => route.gateway === iface.name);
     return {
       label: iface.name.split('-')[1], //Interface names look like `PPPoE-ISPName`,
       connectionName: iface.name,
@@ -49,20 +51,20 @@ router.get('/connections', wrapAsync(async (req, res, next)=> {
 }));
 
 router.post('/connections/prefer/:interfaceName', wrapAsync(async (req, res, next)=> {
-  const allInterfaces = await mikrotik.request('/interface/print');
-  const pppoeInterfaces = allInterfaces.filter( iface => iface.name.startsWith('PPPoE'));
+  const interfaces = await mikrotik.request('/interface/print');
+  const pppoeInterfaces = interfaces.filter( iface => iface.name.startsWith('PPPoE'));
 
   //Only PPPoE interfaces can be preferred
   const iface = pppoeInterfaces.find( iface => iface.name === req.params.interfaceName);
   if(!iface) return res.apiFail({ message: 'Invalid Interface Name'});
 
-  const allRoutes = await mikrotik.request('/ip/route/print');
-  const staticPppoeRoutes = allRoutes.filter( route => mikrotik.stringToBoolean(route.static) && route.gateway.startsWith('PPPoE'));
+  //Get routes with `Default` label; Don't use route.gateway because same gateway interface can be shared by other routes
+  const routes = await mikrotik.request('/ip/route/print');
+  const defaultRoutes = routes.filter( route=> route.comment && route.comment.startsWith('Default'));
 
   //Setting route distance to 2 prefers the route and setting the route distance higher makes the route less preferred
-  for(const route of staticPppoeRoutes) {
-    //Set the selected interface route distance to 2 all other routes to 3
-    const distance = route.gateway === iface.name ? 2: 3;
+  for(const route of defaultRoutes) {
+    const distance = route.gateway === iface.name ? 2: 3; //Set the selected interface route distance to 2 all other routes to 3
     await mikrotik.request('/ip/route/set', { '.id': route['.id'], distance });
   }
 
@@ -70,8 +72,8 @@ router.post('/connections/prefer/:interfaceName', wrapAsync(async (req, res, nex
 }));
 
 router.post('/connections/refresh/:interfaceName', wrapAsync(async (req, res, next)=> {
-  const allInterfaces = await mikrotik.request('/interface/print');
-  const pppoeInterfaces = allInterfaces.filter( iface => iface.name.startsWith('PPPoE'));
+  const interfaces = await mikrotik.request('/interface/print');
+  const pppoeInterfaces = interfaces.filter( iface => iface.name.startsWith('PPPoE'));
 
   //Only PPPoE interfaces can be refreshed
   const iface = pppoeInterfaces.find( iface => iface.name === req.params.interfaceName);
@@ -84,10 +86,10 @@ router.post('/connections/refresh/:interfaceName', wrapAsync(async (req, res, ne
   res.apiSuccess({ message: `Refreshed ${iface.name}`});
 }));
 
-//Return combined speed of all ISP interfaces
+//Return combined speed of all PPPoE interfaces
 router.get('/throughput', wrapAsync(async (req, res, next)=> {
-  const allInterfaces = await mikrotik.request('/interface/print');
-  const pppoeInterfaces = allInterfaces.filter( iface => iface.name.startsWith('PPPoE'));
+  const interfaces = await mikrotik.request('/interface/print');
+  const pppoeInterfaces = interfaces.filter( iface => iface.name.startsWith('PPPoE'));
   let rxSpeed = 0, txSpeed = 0;
 
   for(const iface of pppoeInterfaces) {
@@ -99,41 +101,50 @@ router.get('/throughput', wrapAsync(async (req, res, next)=> {
   res.apiSuccess({ rxSpeed, txSpeed });
 }));
 
-router.get('/throughput/:interfaceName', wrapAsync(async (req, res, next)=> {
-  const allInterfaces = await mikrotik.request('/interface/print');
-  const iface = allInterfaces.find( iface => iface.name === req.params.interfaceName);
-  if(!iface) return res.apiFail({ message: 'Invalid Interface Name'});
-  let [ stats ] = await mikrotik.request('/interface/monitor-traffic', { interface: iface.name, once: true });
-  res.apiSuccess({
-    rxSpeed: Number.parseInt(stats['rx-bits-per-second'], 10),
-    txSpeed: Number.parseInt(stats['tx-bits-per-second'], 10)
-  });
+//Only allow management of certain lists
+router.use('/address-list/:list', wrapAsync(async (req, res, next)=> {
+  const allowedLists = ['Via-DigitalOcean', 'Via-MCN', 'Via-Techminds', 'Filter-Distractions'];
+  if(!allowedLists.includes(req.params.list)) return res.apiFail({ message: 'Invalid address list'});
+  let addresses = await mikrotik.request('/ip/firewall/address-list/print');
+  addresses = addresses.filter(address=> !mikrotik.stringToBoolean(address.dynamic)); //Remove dynamic addresses
+  addresses = addresses.filter(address=> address.list.toLowerCase() === req.params.list.toLowerCase());
+  req.addressList = addresses;
+  next();
 }));
 
 router.get('/address-list/:list', wrapAsync(async (req, res, next)=> {
-  const listName = req.params.list;
-  const list = await mikrotik.getAddressList(listName);
-  if(!list.length) return res.apiFail({ message: 'Unknown list'});
-
-  //Remove dynamic addresses
-  const addresses = list.filter(item=> !mikrotik.stringToBoolean(item.dynamic));
-
-  //Respond with status address and label
-  res.apiSuccess(addresses.map(address=> {
+  res.apiSuccess(req.addressList.map(address=> {
     return {
-      disabled: mikrotik.stringToBoolean(address.disabled),
       address: address.address,
-      label: address.comment //Address label is stored in the comment
-    }
+      list: address.list,
+      disabled: mikrotik.stringToBoolean(address.disabled)
+    };
   }));
 }));
 
-router.post('/address-list/:list/:address/toggle', wrapAsync(async (req, res, next)=> {
-  const list = req.params.list;
-  const address = req.params.address;
-  const result = mikrotik.toggleAddressListItem({ list, address });
-  if(!result) return res.apiFail({ message: 'Invalid address or list'});
-  res.apiSuccess({ message: `Toggled address`});
+router.post('/address-list/:list/add', wrapAsync(async (req, res, next)=> {
+  if(!isIp.v4(req.body.address)) return res.apiFail({ message: 'Invalid address'});
+  const address = req.addressList.find(address=> address.address === req.body.address);
+  if(address) return res.apiFail({ message: 'Address already exists in the list'});
+  await mikrotik.request('/ip/firewall/address-list/add', { address: req.body.address, list: req.params.list });
+  res.apiSuccess({ message: `Added ${req.body.address}` });
+}));
+
+router.post('/address-list/:list/remove', wrapAsync(async (req, res, next)=> {
+  if(!isIp.v4(req.body.address)) return res.apiFail({ message: 'Invalid address'});
+  const address = req.addressList.find(address=> address.address === req.body.address);
+  if(!address) return res.apiFail({ message: 'Address does not exist in the list'});
+  await mikrotik.request('/ip/firewall/address-list/remove', { '.id': address['.id'] });
+  res.apiSuccess({ message: `Removed ${req.body.address}` });
+}));
+
+router.post('/address-list/:list/toggle', wrapAsync(async (req, res, next)=> {
+  if(!isIp.v4(req.body.address)) return res.apiFail({ message: 'Invalid address'});
+  const address = req.addressList.find(address=> address.address === req.body.address);
+  if(!address) return res.apiFail({ message: 'Address does not exist in the list'});
+  const currentStatus = mikrotik.stringToBoolean(address.disabled);
+  await mikrotik.request('/ip/firewall/address-list/set', { '.id': address['.id'], disabled: mikrotik.booleanToString(!currentStatus) });
+  res.apiSuccess({ message: `Toggled ${req.body.address}` });
 }));
 
 router.get('/guest-wifi', wrapAsync(async (req, res, next)=> {

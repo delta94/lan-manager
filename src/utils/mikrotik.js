@@ -39,29 +39,8 @@ function stringToBoolean(value) {
   return value === 'true' || value === 'yes';
 }
 
-async function getAddressList(list) {
-  const addressList = await requestRouter('/ip/firewall/address-list/print');
-  return addressList.filter( item=> item.list === list);
-}
-
-async function getAddressListItem({ list, address }) {
-  const addressList = await getAddressList(list);
-  return addressList.find( item => item.address === address);
-}
-
-async function toggleAddressListItem({ list, address }) {
-  const addressListItem = await getAddressListItem({ list, address });
-  if(!addressListItem) return;
-  const currentStatus = stringToBoolean(addressListItem.disabled);
-  await requestRouter('/ip/firewall/address-list/set', { '.id': addressListItem['.id'], disabled: booleanToString(!currentStatus) });
-  return await getAddressListItem({ list, address });
-}
-
 module.exports = {
   request: requestRouter,
   booleanToString,
-  stringToBoolean,
-  getAddressList,
-  getAddressListItem,
-  toggleAddressListItem
+  stringToBoolean
 };

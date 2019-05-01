@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import DeviceMonitor from './device-monitor/device-monitor';
 import Speed from './speed'
 import Connections from './connections/connections';
-import AddressList from './address-list/address-list';
 import Wifi from './wifi';
 import '../scss/style.scss';
 
@@ -25,8 +24,7 @@ function App(){
       <div className="MainContent">
         <MainSection title="Connections" name="connections"><Connections/></MainSection>
         <MainSection title="Throughput" name="speed"><Speed/></MainSection>
-        <MainSection title="VPN" name="vpn"><AddressList list="VPN" icon="shield"/></MainSection>
-        <MainSection title="Guest Network" name="wifi"><Wifi/></MainSection>
+        {/* <MainSection title="Guest Network" name="wifi"><Wifi/></MainSection> */}
         <MainSection title="Devices" name="devices"><DeviceMonitor/></MainSection>
       </div>
     </>

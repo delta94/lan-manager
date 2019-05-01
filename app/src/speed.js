@@ -46,9 +46,9 @@ export default class Speed extends Component {
       const response = await fetch(`/api/throughput`);
       const { data } = await response.json();
 
-      this.state.speed = { upload: data.rxSpeed, download: data.txSpeed };
-      this.state.speedHistory.upload.push(data.rxSpeed);
-      this.state.speedHistory.download.push(data.txSpeed);
+      this.state.speed = { upload: data.txSpeed, download: data.rxSpeed };
+      this.state.speedHistory.upload.push(data.txSpeed);
+      this.state.speedHistory.download.push(data.rxSpeed);
       this.trimSpeedHistory();
 
       this.setState(this.state);

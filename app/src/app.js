@@ -24,7 +24,7 @@ function App(){
       <div className="MainContent">
         <MainSection title="Connections" name="connections"><Connections/></MainSection>
         <MainSection title="Throughput" name="speed"><Speed/></MainSection>
-        {/* <MainSection title="Guest Network" name="wifi"><Wifi/></MainSection> */}
+        <MainSection title="Guest Network" name="wifi"><Wifi/></MainSection>
         <MainSection title="Devices" name="devices"><DeviceMonitor/></MainSection>
       </div>
     </>

@@ -19,6 +19,20 @@ router.get('/devices', wrapAsync(async (req, res, next)=> {
   res.apiSuccess(deviceList);
 }));
 
+router.get('/arp', wrapAsync(async (req, res, next)=> {
+  let devices = await mikrotik.request('/ip/arp/print');
+  devices = devices.filter( device=> mikrotik.stringToBoolean(device.complete)); //Only list complete arp entries
+  const stats = await Promise.all(devices.map( device => isReachable(device.address)));
+  res.apiSuccess(devices.map( (device, index)=> {
+    return {
+      address: device.address,
+      mac: device['mac-address'],
+      lan: device.address.startsWith('192.168'),
+      active: stats[index]
+    };
+  }));
+}));
+
 router.get('/connections', wrapAsync(async (req, res, next)=> {
   const interfaces = await mikrotik.request('/interface/print');
   const pppoeInterfaces = interfaces.filter( iface => iface.name.startsWith('PPPoE'));

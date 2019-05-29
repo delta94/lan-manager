@@ -115,52 +115,6 @@ router.get('/throughput', wrapAsync(async (req, res, next)=> {
   res.apiSuccess({ rxSpeed, txSpeed });
 }));
 
-//Only allow management of certain lists
-router.use('/address-list/:list', wrapAsync(async (req, res, next)=> {
-  const allowedLists = ['Via-DigitalOcean', 'Via-MCN', 'Via-Techminds', 'Filter-Distractions'];
-  if(!allowedLists.includes(req.params.list)) return res.apiFail({ message: 'Invalid address list'});
-  let addresses = await mikrotik.request('/ip/firewall/address-list/print');
-  addresses = addresses.filter(address=> !mikrotik.stringToBoolean(address.dynamic)); //Remove dynamic addresses
-  addresses = addresses.filter(address=> address.list.toLowerCase() === req.params.list.toLowerCase());
-  req.addressList = addresses;
-  next();
-}));
-
-router.get('/address-list/:list', wrapAsync(async (req, res, next)=> {
-  res.apiSuccess(req.addressList.map(address=> {
-    return {
-      address: address.address,
-      list: address.list,
-      disabled: mikrotik.stringToBoolean(address.disabled)
-    };
-  }));
-}));
-
-router.post('/address-list/:list/add', wrapAsync(async (req, res, next)=> {
-  if(!isIp.v4(req.body.address)) return res.apiFail({ message: 'Invalid address'});
-  const address = req.addressList.find(address=> address.address === req.body.address);
-  if(address) return res.apiFail({ message: 'Address already exists in the list'});
-  await mikrotik.request('/ip/firewall/address-list/add', { address: req.body.address, list: req.params.list });
-  res.apiSuccess({ message: `Added ${req.body.address}` });
-}));
-
-router.post('/address-list/:list/remove', wrapAsync(async (req, res, next)=> {
-  if(!isIp.v4(req.body.address)) return res.apiFail({ message: 'Invalid address'});
-  const address = req.addressList.find(address=> address.address === req.body.address);
-  if(!address) return res.apiFail({ message: 'Address does not exist in the list'});
-  await mikrotik.request('/ip/firewall/address-list/remove', { '.id': address['.id'] });
-  res.apiSuccess({ message: `Removed ${req.body.address}` });
-}));
-
-router.post('/address-list/:list/toggle', wrapAsync(async (req, res, next)=> {
-  if(!isIp.v4(req.body.address)) return res.apiFail({ message: 'Invalid address'});
-  const address = req.addressList.find(address=> address.address === req.body.address);
-  if(!address) return res.apiFail({ message: 'Address does not exist in the list'});
-  const currentStatus = mikrotik.stringToBoolean(address.disabled);
-  await mikrotik.request('/ip/firewall/address-list/set', { '.id': address['.id'], disabled: mikrotik.booleanToString(!currentStatus) });
-  res.apiSuccess({ message: `Toggled ${req.body.address}` });
-}));
-
 router.get('/guest-wifi', wrapAsync(async (req, res, next)=> {
   const wifis = await unifi.request('/rest/wlanconf');
   const wifi = wifis.find(wifi=> wifi.is_guest);

@@ -1,5 +1,5 @@
 const express = require('express');
-const isIp = require('is-ip');
+const sortBy = require('lodash.sortby');
 const mikrotik = require('./utils/mikrotik');
 const isReachable = require('./utils/is-reachable');
 const wrapAsync = require('./utils/wrap-async-middleware');
@@ -23,14 +23,15 @@ router.get('/arp', wrapAsync(async (req, res, next)=> {
   let devices = await mikrotik.request('/ip/arp/print');
   devices = devices.filter( device=> mikrotik.stringToBoolean(device.complete)); //Only list complete arp entries
   const stats = await Promise.all(devices.map( device => isReachable(device.address)));
-  res.apiSuccess(devices.map( (device, index)=> {
+  const list = devices.map( (device, index)=> {
     return {
       address: device.address,
       mac: device['mac-address'],
       lan: device.address.startsWith('192.168'),
       active: stats[index]
     };
-  }));
+  });
+  res.apiSuccess(sortBy(list, 'address'));
 }));
 
 router.get('/connections', wrapAsync(async (req, res, next)=> {

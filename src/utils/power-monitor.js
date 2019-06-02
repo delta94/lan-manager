@@ -14,7 +14,7 @@ async function logStatus() {
     const statsFile = getStatsFile();
     const data = await getStats(statsFile);
     data.push({ time: (new Date()).toISOString(), status: await getStatus() });
-    saveStats(statsFile);
+    saveStats(data, statsFile);
   } catch (err) {
     console.error(err);
   }
@@ -28,7 +28,7 @@ async function getStats(statsFile = getStatsFile()) {
   return (await fs.readJSON(statsFile).catch(()=>{})) || [];
 }
 
-async function saveStats(statsFile = getStatsFile()) {
+async function saveStats(data, statsFile = getStatsFile()) {
   await fs.outputFile(statsFile, JSON.stringify(data, null, '  '));
 }
 

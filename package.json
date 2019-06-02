@@ -8,6 +8,7 @@
     "forever": "^1.0.0",
     "fs-extra": "^8.0.1",
     "lodash.sortby": "^4.7.0",
+    "luxon": "^1.16.0",
     "mikronode": "^2.3.11",
     "random-words": "^1.1.0",
     "request": "^2.88.0",

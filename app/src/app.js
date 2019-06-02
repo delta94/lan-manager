@@ -4,6 +4,7 @@ import DeviceMonitor from './device-monitor/device-monitor';
 import Speed from './speed'
 import Connections from './connections/connections';
 import Wifi from './wifi';
+import Power from './power';
 import '../scss/style.scss';
 
 function MainSection({ title, children, name }) {
@@ -25,6 +26,7 @@ function App(){
         <MainSection title="Connections" name="connections"><Connections/></MainSection>
         <MainSection title="Throughput" name="speed"><Speed/></MainSection>
         <MainSection title="Guest Network" name="wifi"><Wifi/></MainSection>
+        <MainSection title="Electricity" name="power"><Power/></MainSection>
         <MainSection title="Devices" name="devices"><DeviceMonitor/></MainSection>
       </div>
     </>

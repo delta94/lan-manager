@@ -5,6 +5,7 @@ const isReachable = require('./utils/is-reachable');
 const wrapAsync = require('./utils/wrap-async-middleware');
 const devices = require('./devices');
 const unifi = require('./utils/unifi');
+const powerMonitor = require('./utils/power-monitor');
 const password = require('./utils/password');
 const router = new express.Router();
 
@@ -132,6 +133,14 @@ router.post('/guest-wifi/reset-password', wrapAsync(async (req, res, next)=> {
     method: 'PUT', body: { x_passphrase: pw }
   });
   res.apiSuccess({ name: wifi.name, password: pw });
+}));
+
+router.get('/power-status', wrapAsync(async (req, res, next)=> {
+  res.apiSuccess({ status: await powerMonitor.getStatus() });
+}));
+
+router.get('/power-stats', wrapAsync(async (req, res, next)=> {
+  res.apiSuccess(await powerMonitor.getStats());
 }));
 
 module.exports = router;

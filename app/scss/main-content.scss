@@ -11,16 +11,17 @@
   grid-template-rows: repeat(3, max-content);
   grid-template-areas:
     "connections speed"
-    "wifi wifi"
+    "wifi power"
     "devices devices";
 
   @media (max-width: 700px) {
     grid-template-columns: 1fr;
-    grid-template-rows: repeat(4, max-content);
+    grid-template-rows: repeat(5, max-content);
     grid-template-areas:
     "connections"
     "speed"
     "wifi"
+    "power"
     "devices";
   }
 }

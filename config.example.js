@@ -1,4 +1,7 @@
 module.exports = {
+  powerMonitor: {
+    address: '10.0.0.10'
+  },
   router: {
     address: '192.168.1.1',
     username: 'admin',

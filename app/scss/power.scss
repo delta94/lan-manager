@@ -1,0 +1,27 @@
+.Power {
+  text-align: center;
+  padding: 25px 15px;
+  background: $color-accent;
+  border-radius: 4px;
+  display: grid;
+  grid-gap: 10px;
+  min-height: 100%;
+
+  &--isUp {
+    background: $color-success;
+    color: white;
+  }
+
+  &--isDown {
+    background: $color-danger;
+    color: white;
+  }
+
+  &__icon {
+    font-size: 3rem;
+  }
+
+  &__status {
+    font-size: 2rem;
+  }
+}

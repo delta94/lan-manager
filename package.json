@@ -20,10 +20,7 @@
     "start": "forever src",
     "start-dev": "npm run build && node src",
     "build": "webpack",
-    "watch": "webpack --watch",
-    "docker-build": "npm run build && docker build -t lan-manager .",
-    "docker-run": "docker run -p 9000:9000 -v $PWD/config.js:/app/config.js lan-manager",
-    "docker-publish": "./docker-publish.sh"
+    "watch": "webpack --watch"
   },
   "devDependencies": {
     "@babel/core": "^7.4.5",

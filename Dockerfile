@@ -12,7 +12,7 @@ RUN npm install --production
 
 COPY src /app/src
 COPY static /app/static
-VOLUME [ "/app/config.js", "/app/data" ]
+VOLUME [ "/app/config.js" ]
 
 EXPOSE 9000
 

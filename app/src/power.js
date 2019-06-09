@@ -15,7 +15,7 @@ export default function Power() {
       <div className="Power__icon">
         <i className="icon-bolt"></i>
       </div>
-      <div className="Power__status">Electricity supply is {data.status? 'normal': 'out'}</div>
+      <div className="Power__status">Power supply is {data.status? 'up': 'down'}</div>
     </div>
   );
 }

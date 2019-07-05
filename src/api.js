@@ -38,8 +38,6 @@ router.get('/connections', wrapAsync(async (req, res, next)=> {
   const interfaces = await mikrotik.request('/interface/print');
   const pppoeInterfaces = interfaces.filter( iface => iface.name.startsWith('PPPoE'));
 
-  console.log(interfaces, pppoeInterfaces);
-
   //Get routes with `Default` label; Don't use route.gateway because same gateway interface can be shared by other routes
   const routes = await mikrotik.request('/ip/route/print');
   const defaultRoutes = routes.filter( route=> route.comment && route.comment.startsWith('Default'));
@@ -51,8 +49,6 @@ router.get('/connections', wrapAsync(async (req, res, next)=> {
       preferredRoute = route;
     }
   }
-
-  console.log(routes);
 
   const connections = pppoeInterfaces.map( iface => {
     const route = defaultRoutes.find( route => route.gateway === iface.name);

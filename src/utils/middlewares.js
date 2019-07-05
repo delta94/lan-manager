@@ -8,7 +8,7 @@ module.exports = (req, res, next)=> {
     });
   };
 
-  res.apiFail = ({ code = 500, data = {}, message = "Server Error"} = {})=> {
+  res.apiFail = ({ code = 500, data = {}, message = 'Server Error'} = {})=> {
     res.status(code);
     res.json({
       success: false,

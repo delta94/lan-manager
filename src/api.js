@@ -1,12 +1,24 @@
 const express = require('express');
 const sortBy = require('lodash.sortby');
-const mikrotik = require('./utils/mikrotik');
+const mikrotik = require('./mikrotik');
 const isReachable = require('./utils/is-reachable');
 const wrapAsync = require('./utils/wrap-async-middleware');
 const devices = require('./devices');
-const unifi = require('./utils/unifi');
+const unifi = require('./unifi');
 const password = require('./utils/password');
 const router = new express.Router();
+
+// Add api methods
+router.use((req, res, next)=> {
+  res.apiSuccess = (data)=> {
+    res.json({ success: true, error: false, data });
+  };
+
+  res.apiFail = ({ code = 500, data = {}, message = 'Server Error'} = {})=> {
+    res.status(code);
+    res.json({ success: false, error: true, data, message });
+  };
+});
 
 router.get('/devices', wrapAsync(async (req, res, next)=> {
   const stats = await Promise.all(devices.map( device => isReachable(device.ip)));

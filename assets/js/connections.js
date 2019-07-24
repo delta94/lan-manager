@@ -42,9 +42,9 @@ function swallowError(promise) {
 function reducer(state, action) {
   switch(action.type) {
     case 'LOADING':
-      return { ...state, loading: true };
+      return { ...state, loading: true, error: null };
     case 'ERROR':
-      return { ...state, error: action.error };
+      return { ...state, loading: false, error: action.error };
     case 'LOAD':
       return { loading: false, error: null, connections: action.connections };
     case 'PREFER':

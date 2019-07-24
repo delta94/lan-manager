@@ -22,7 +22,7 @@ async function refresh(connectionName) {
 async function prefer(connectionName) {
   const response = await fetch(`/api/connections/prefer/${connectionName}`, { method: 'post' });
   const json = await response.json();
-  await delay(1000); // Give a second for the router to switch connections
+  await delay(2 * 1000); // Give a few seconds for the router to switch connections
   if(!json.error) return;
   let err = new Error(json.message);
   err.data = json.data;

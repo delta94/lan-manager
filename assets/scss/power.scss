@@ -1,27 +1,23 @@
 .Power {
   text-align: center;
-  padding: 25px 15px;
-  background: $color-accent;
-  border-radius: 4px;
   display: grid;
-  grid-gap: 10px;
-  min-height: 100%;
+  grid-gap: $gap-md;
+  align-content: center;
+  border-radius: 4px;
+  padding: $gap-xl;
+  background: $color-accent;
 
   &--up {
     background: $color-success;
-    color: white;
+    color: $color-text-inverse;
   }
 
   &--down {
     background: $color-danger;
-    color: white;
+    color: $color-text-inverse;
   }
 
   &__icon {
-    font-size: 3rem;
-  }
-
-  &__status {
-    font-size: 2rem;
+    font-size: $font-size-lg;
   }
 }

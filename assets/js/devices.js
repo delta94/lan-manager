@@ -35,12 +35,12 @@ export default function Devices() {
 
 function Device(props) {
   return (
-    <a className={`Devices__device Devices__device--${props.device.online? 'online': 'offline'}`} href={`http://${props.device.ip}:${props.device.port || 80}`}>
-      <div className="Devices__device-icon">
+    <a className={`Device Device--${props.device.online? 'online': 'offline'}`} href={`http://${props.device.ip}:${props.device.port || 80}`}>
+      <div className="Device__icon">
         <i className="icon-network"></i>
       </div>
-      <div className="Devices__device-name">{props.device.deviceName}</div>
-      <div className="Devices__device-ip">{props.device.ip}</div>
+      <div className="Device__name">{props.device.deviceName}</div>
+      <div className="Device__ip">{props.device.ip}</div>
     </a>
   );
 }

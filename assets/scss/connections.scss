@@ -1,25 +1,33 @@
 .Connections {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-gap: 15px;
-  min-height: 100%;
+  grid-auto-flow: column;
+  grid-template-rows: auto;
+  grid-gap: $gap-lg;
 }
 
 .Connection {
-  padding: 25px 15px;
-  display: flex;
-  align-content: space-around;
-  flex-direction: column;
-  position: relative;
-  overflow: hidden;
-  text-align: center;
+  display: grid;
+  grid-gap: $gap-md;
+  align-content: center;
   border-radius: 4px;
+  padding: $gap-xl;
   background: $color-accent;
-  cursor: pointer;
-  min-height: 170px;
+
+  &__label {
+    font-size: $font-size-lg;
+    text-align: center;
+  }
+
+  &__actions {
+    display: grid;
+    justify-content: center;
+    grid-auto-flow: column;
+    grid-gap: $gap-sm;
+  }
 
   &--not-running {
     background: $color-danger;
+    color: white;
   }
 
   &--active {
@@ -27,62 +35,13 @@
     color: white;
   }
 
-  &__preferred-icon {
-    display: none;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 30px;
-    height: 30px;
-    line-height: 30px;
-    z-index: 2;
-    color: #fff;
-
-    &::before {
-      content: '';
-      position: absolute;
-      top: -35px;
-      left: -35px;
-      width: 70px;
-      height: 70px;
-      border: 1px solid rgba(white, .6);
-      display: block;
-      transform: rotate(45deg);
-      z-index: 1;
-    }
-  }
-
-  &:hover {
+  &__action {
+    background: rgba($color-text, .3);
     color: white;
   }
 
-  &--hover {
-    background: $color-success;
-  }
-
-  &--hover &__preferred-icon {
-    display: block;
-  }
-
-  &--preferred &__preferred-icon {
-    display: block;
-  }
-
-  &__label {
-    font-size: 2.2rem;
-    margin: auto 0;
-  }
-
-  &__actions {
-    margin: auto 0;
-  }
-
-  &__action {
-    background: rgba(black, .3);
-
-    &:hover {
-      background: white;
-      color: #22262E;
-    }
+  &__action:hover {
+    background: white;
+    color: $color-text;
   }
 }

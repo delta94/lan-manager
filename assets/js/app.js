@@ -7,11 +7,11 @@ import Wifi from './wifi';
 import Power from './power';
 import '../scss/style.scss';
 
-function MainSection({ title, children, name }) {
+function Section({ title, children, name }) {
   return (
-    <div className={`MainSection MainSection--${name}`}>
-      <h2 className="MainSection__title">{title}</h2>
-      <div className="MainSection__content">{children}</div>
+    <div className={`Section Section--${name}`}>
+      <h2 className="Section__title">{title}</h2>
+      <div className="Section__content">{children}</div>
     </div>
   );
 }
@@ -19,15 +19,15 @@ function MainSection({ title, children, name }) {
 function App(){
   return (
     <>
-      <header className="MainHeader">
-        <h2 className="MainHeader__title">LAN Manager</h2>
+      <header className="Header">
+        <h2 className="Header__title">LAN Manager</h2>
       </header>
-      <div className="MainContent">
-        <MainSection title="Connections" name="connections"><Connections/></MainSection>
-        <MainSection title="Throughput" name="speed"><Throughput/></MainSection>
-        <MainSection title="Guest Network" name="wifi"><Wifi/></MainSection>
-        <MainSection title="Electricity" name="power"><Power/></MainSection>
-        <MainSection title="Devices" name="devices"><Devices/></MainSection>
+      <div className="Main">
+        <Section title="Connections" name="connections"><Connections/></Section>
+        <Section title="Throughput" name="throughput"><Throughput/></Section>
+        <Section title="Guest Network" name="wifi"><Wifi/></Section>
+        <Section title="Electricity" name="power"><Power/></Section>
+        <Section title="Devices" name="devices"><Devices/></Section>
       </div>
     </>
   );

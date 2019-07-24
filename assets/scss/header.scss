@@ -1,6 +1,6 @@
-.MainHeader {
+.Header {
   background: #3498db;
-  color: white;
+  color: $color-text-inverse;
   display: none;
 
   @media (display-mode: standalone) {

@@ -46,9 +46,11 @@ function reducer(state, action) {
     case 'LOAD':
       return { loading: false, error: null, connections: action.connections };
     case 'PREFER':
-      state.connections.map(c=> c.preferred = false); // Remove preferred from other connections
+      state.connections.forEach(c=> c.preferred = false); // Remove preferred from other connections
+      state.connections.forEach(c=> c.active = false); // Remove active from other connections
       action.connection.preferred = true;
-      return { ...state, connections };
+      action.connection.active = true;
+      return { ...state };
     default:
       throw new Error(`Invalid action ${action.type}`);
   }
@@ -102,7 +104,7 @@ export default function Connections() {
         onRefresh={()=> swallowError(refresh(connection.connectionName))}
         onPrefer={()=> {
           setPollData(false); // Give some time for the router to switch connections
-          dispatch({ type: 'PREFER', connection: connection });
+          dispatch({ type: 'PREFER', connection });
           swallowError(
             prefer(connection.connectionName).finally(()=> setPollData(true)) // Restart polling
           );

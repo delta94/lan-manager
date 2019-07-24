@@ -15,8 +15,8 @@ html {
 
 body {
   font-size: 1.5rem;
-  color: rgba(#fff, .7);
   background: #22262E;
+  color: $color-text-inverse;
   @media (display-mode: standalone) {
     background-color: #3498db; //Make the background color match the header in PWA mode
   }

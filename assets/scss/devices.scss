@@ -2,7 +2,7 @@
   &__devices {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    grid-gap: 15px;
+    grid-gap: $gap-lg;
 
     @media(max-width: 700px) {
       grid-template-columns: repeat(2, 1fr);
@@ -10,36 +10,31 @@
   }
 }
 
-.Devices__device {
+.Device {
   text-decoration: none;
   text-align: center;
-  padding: 25px 15px;
-  color: inherit;
-  background: $color-accent;
-  border-radius: 4px;
   display: grid;
-  grid-gap: 10px;
+  grid-gap: $gap-md;
+  align-content: center;
+  border-radius: 4px;
+  padding: $gap-xl;
+  background: $color-accent;
 
   &--online {
     background: $color-success;
-    color: #fff;
+    color: $color-text-inverse;
   }
 
   &--offline {
     background: $color-danger;
-    color: #fff;
+    color: $color-text-inverse;
   }
 
-  &-icon {
-    font-size: 2.5rem;
+  &__icon {
+    font-size: $font-size-lg;
   }
 
-  &-name {
-    font-size: 1.6rem;
-  }
-
-  &-ip {
+  &__ip {
     opacity: .8;
-    font-size: 1.3rem;
   }
 }

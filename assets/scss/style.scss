@@ -2,14 +2,10 @@
 @import "variables";
 @import "base";
 @import "header";
-@import "main-content";
-@import "main-section";
-@import "devices";
+@import "main";
 @import "connections";
+@import "throughput";
 @import "wifi";
 @import "power";
-@import "throughput";
+@import "devices";
 
-#app {
-  background: #22262E;
-}

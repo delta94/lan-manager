@@ -1,22 +1,33 @@
 .Wifi {
+  align-self: stretch;
   text-align: center;
-  padding: 25px 15px;
-  color: inherit;
-  background: $color-accent;
-  border-radius: 4px;
   display: grid;
-  grid-gap: 10px;
-  min-height: 100%;
+  grid-gap: $gap-md;
+  align-content: center;
+  border-radius: 4px;
+  padding: $gap-lg;
+  background: $color-accent;
+
+  &--up {
+    background: $color-success;
+    color: $color-text-inverse;
+  }
+
+  &--down {
+    background: $color-danger;
+    color: $color-text-inverse;
+  }
 
   &__icon {
-    font-size: 3rem;
+    font-size: $font-size-lg;
   }
 
   &__name {
-    font-size: 3rem;
+    font-size: $font-size-lg;
   }
 
   &__password {
     opacity: .8;
   }
 }
+

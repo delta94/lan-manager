@@ -1,0 +1,60 @@
+.Main {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: grid;
+  padding: $gap-lg;
+  grid-column-gap: $gap-lg;
+  grid-row-gap: $gap-xxl;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas:
+    "connections throughput"
+    "wifi power"
+    "devices devices";
+
+  @media (max-width: 700px) {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+    "connections"
+    "throughput"
+    "wifi"
+    "power"
+    "devices";
+  }
+}
+
+.Section {
+  display: grid;
+  grid-template-rows: max-content auto;
+
+  &__title {
+    margin: 0;
+    font-weight: normal;
+    text-align: center;
+    padding: $gap-lg;
+    font-size: $font-size-lg;
+  }
+
+  &__content {
+    display: grid;
+  }
+
+  &--connections {
+    grid-area: connections;
+  }
+
+  &--throughput {
+    grid-area: throughput;
+  }
+
+  &--wifi {
+    grid-area: wifi;
+  }
+
+  &--power {
+    grid-area: power;
+  }
+
+  &--devices {
+    grid-area: devices;
+  }
+}

@@ -1,17 +1,24 @@
 .Throughput {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto;
   grid-gap: $gap-lg;
 }
 
 .Speed {
-  text-align: center;
-  background: $color-accent;
-  border-radius: $radius-md;
   display: grid;
-  grid-gap: $gap-lg;
+  grid-gap: $gap-md;
+  align-content: center;
+  border-radius: 4px;
+  padding: $gap-xl;
+  background: $color-accent;
 
-  &-bytes {
+  &__bytes {
     font-size: $font-size-lg;
+    text-align: center;
+  }
+
+  &__unit {
+    text-align: center;
   }
 }

@@ -1,4 +1,5 @@
 import React, { useState, useReducer, useEffect } from 'react';
+const delay = (timeout)=> new Promise((resolve)=> setTimeout(resolve, timeout));
 
 const initialState = {
   loading: true,
@@ -27,6 +28,7 @@ async function refresh(connectionName) {
 async function prefer(connectionName) {
   const response = await fetch(`/api/connections/prefer/${connectionName}`, { method: 'post' });
   const json = await response.json();
+  await delay(1000); // Give a second for the router to switch connections
   if(!json.error) return;
   let err = new Error(json.message);
   err.data = json.data;

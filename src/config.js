@@ -6,6 +6,7 @@ function loadFromEnv(key) {
 }
 
 module.exports = {
+  port: loadFromEnv('PORT'),
   router: {
     address: loadFromEnv('ROUTER_ADDRESS'),
     username: loadFromEnv('ROUTER_USERNAME'),

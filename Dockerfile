@@ -31,6 +31,4 @@ COPY src /app/src
 
 COPY --from=builder /app/public /app/public
 
-EXPOSE 9000
-
 CMD ["npm", "run", "start"]

@@ -1,8 +1,11 @@
 .Throughput {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto;
-  grid-gap: $gap-lg;
+  &__inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+    grid-gap: $gap-lg;
+  }
 }
 
 .Speed {

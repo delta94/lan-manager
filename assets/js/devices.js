@@ -17,7 +17,7 @@ export default function Devices() {
   );
 
   const renderDevices = ()=> (
-    <div className="Devices__devices">
+    <div className="Devices__inner">
       {devices.map(device => {
         return <Device device={device} key={device.ip}/>
       })}

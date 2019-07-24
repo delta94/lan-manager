@@ -2,12 +2,32 @@ import React from 'react';
 import useApi from './hooks/use-polling-api';
 
 export default function Throughput() {
-  const { error, data, loading } = useApi(`/api/power-status`);
+  const { error, data, loading } = useApi(`/api/throughput`, 1000); // Poll every second
+
+  const renderError = ()=> (
+    <div className="Throughput__error">
+      { error.message }
+    </div>
+  );
+
+  const renderLoading = ()=> (
+    <div className="Throughput__loading">
+      Loading...
+    </div>
+  );
+
+  const renderSpeed = ()=> (
+    <div className="Throughput__inner">
+      <Speed bytes={data.rxSpeed} icon='arrow_downward' />
+      <Speed bytes={data.txSpeed} icon='arrow_upward' />
+    </div>
+  );
 
   return (
     <div className="Throughput">
-      <Speed bytes={1000000} icon='arrow_upward' />
-      <Speed bytes={1000000} icon='arrow_downward' />
+      { error ? renderError() : null }
+      { loading ? renderLoading() : null }
+      { !(error || loading) ? renderSpeed() : null }
     </div>
   );
 }

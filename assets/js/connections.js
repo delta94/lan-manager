@@ -87,7 +87,12 @@ export default function Connections() {
         disabled={connection.disabled}
         active={connection.active}
         preferred={connection.preferred}
-        onRefresh={()=> swallowError(refresh(connection.connectionName))}
+        onRefresh={()=> {
+          swallowError(
+            refresh(connection.connectionName)
+              .finally(()=> loadConnections())
+          );
+        }}
         onPrefer={()=> {
           setPollData(false); // Pause polling while requesting the server
           markPreferred(connection); // Mark as preferred before requesting the server for snappier transition

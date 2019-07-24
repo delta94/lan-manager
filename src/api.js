@@ -18,6 +18,8 @@ router.use((req, res, next)=> {
     res.status(code);
     res.json({ success: false, error: true, data, message });
   };
+
+  next();
 });
 
 router.get('/devices', wrapAsync(async (req, res, next)=> {

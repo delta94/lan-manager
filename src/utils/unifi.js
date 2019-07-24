@@ -1,6 +1,6 @@
 const path = require('path');
 const rp = require('request-promise-native');
-const config = require('../../config.js');
+const config = require('../config.js');
 
 const request = rp.defaults({
   jar: true,

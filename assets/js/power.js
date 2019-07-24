@@ -11,7 +11,7 @@ export default function Power() {
   }
 
   return (
-    <div className={`Power Power--${data.status? 'isUp': 'isDown'}`}>
+    <div className={`Power Power--${data.status? 'up': 'down'}`}>
       <div className="Power__icon">
         <i className="icon-bolt"></i>
       </div>

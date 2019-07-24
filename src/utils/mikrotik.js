@@ -1,6 +1,6 @@
 const Mikronode = require('mikronode');
 const uuid = require('uuid');
-const config = require('../../config.js');
+const config = require('../config.js');
 let mikrotikConnection;
 
 async function getConnection() {

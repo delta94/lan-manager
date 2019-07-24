@@ -1,14 +1,16 @@
-.DeviceMonitor {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-gap: 15px;
+.Devices {
+  &__devices {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 15px;
 
-  @media(max-width: 700px) {
-    grid-template-columns: repeat(2, 1fr);
+    @media(max-width: 700px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 }
 
-.DeviceMonitor__Device {
+.Devices__device {
   text-decoration: none;
   text-align: center;
   padding: 25px 15px;
@@ -28,15 +30,15 @@
     color: #fff;
   }
 
-  &__icon {
+  &-icon {
     font-size: 2.5rem;
   }
 
-  &__name {
+  &-name {
     font-size: 1.6rem;
   }
 
-  &__ip {
+  &-ip {
     opacity: .8;
     font-size: 1.3rem;
   }

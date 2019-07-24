@@ -1,14 +1,14 @@
 @import "../vendor/icomoon/style.css";
 @import "variables";
 @import "base";
-@import "main-header";
+@import "header";
 @import "main-content";
 @import "main-section";
-@import "device-monitor";
-@import "speed";
+@import "devices";
 @import "connections";
 @import "wifi";
 @import "power";
+@import "throughput";
 
 #app {
   background: #22262E;

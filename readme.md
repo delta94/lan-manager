@@ -1,4 +1,3 @@
 ## LAN Manager
-Progressive web app to manage my LAN. Requires a Mikrotik router.
-
+Progressive web app to manage my LAN.
 ![Screenshot](screenshot.png)

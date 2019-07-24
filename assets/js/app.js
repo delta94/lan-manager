@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import DeviceMonitor from './device-monitor/device-monitor';
-import Speed from './speed'
-import Connections from './connections/connections';
+import Devices from './devices';
+import Throughput from './throughput';
+import Connections from './connections';
 import Wifi from './wifi';
 import Power from './power';
 import '../scss/style.scss';
@@ -24,10 +24,10 @@ function App(){
       </header>
       <div className="MainContent">
         <MainSection title="Connections" name="connections"><Connections/></MainSection>
-        <MainSection title="Throughput" name="speed"><Speed/></MainSection>
+        <MainSection title="Throughput" name="speed"><Throughput/></MainSection>
         <MainSection title="Guest Network" name="wifi"><Wifi/></MainSection>
         <MainSection title="Electricity" name="power"><Power/></MainSection>
-        <MainSection title="Devices" name="devices"><DeviceMonitor/></MainSection>
+        <MainSection title="Devices" name="devices"><Devices/></MainSection>
       </div>
     </>
   );

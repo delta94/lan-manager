@@ -33,7 +33,7 @@ export default function Throughput() {
     loadData();
     const interval = setInterval(()=> loadData(), 1000);
     return ()=> clearInterval(interval);
-  }, []);
+  }, [loadData]);
 
   return (
     <div className="Throughput">

@@ -95,7 +95,7 @@ export default function Connections() {
           preferred={connection.preferred}
           onRefresh={()=> swallowError(refresh(connection.connectionName))}
           onPrefer={()=> {
-            setPollData(false); // Give some time to the router to switch connections
+            setPollData(false); // Give some time for the router to switch connections
             dispatch({ type: 'PREFER', connection: connection });
             swallowError(
               prefer(connection.connectionName).finally(()=> setPollData(true)) // Restart polling

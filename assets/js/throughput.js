@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Sparklines, SparklinesLine, SparklinesSpots } from 'react-sparklines';
 
 async function load() {
@@ -18,7 +18,7 @@ export default function Throughput() {
   const [ downloadHistory, setDownloadHistory ] = useState(Array(15).fill(0));
   const [ uploadHistory, setUploadHistory ] = useState(Array(15).fill(0));
 
-  const loadData = useCallback(()=> {
+  const loadData = ()=> {
     swallowError(
       load()
         .then(({ rxSpeed, txSpeed })=> {
@@ -26,14 +26,14 @@ export default function Throughput() {
           setUploadHistory((history)=> [...history, txSpeed].slice(-15)); // Keep only 15 entries
         })
     );
-  }, []);
+  }
 
   // load data every second
   useEffect(()=> {
     loadData();
     const interval = setInterval(()=> loadData(), 1000);
     return ()=> clearInterval(interval);
-  }, [loadData]);
+  }, []);
 
   return (
     <div className="Throughput">

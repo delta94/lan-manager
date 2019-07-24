@@ -57,6 +57,7 @@ function reducer(state, action) {
 export default function Connections() {
   const [ state, dispatch ] = useReducer(reducer, initialState);
   const [ pollData, setPollData ] = useState(true);
+  const { error, loading, connections } = state;
 
   // Load on mount
   useEffect(()=> {
@@ -77,32 +78,44 @@ export default function Connections() {
     return ()=> clearInterval(interval);
   }, [pollData]);
 
-  if(state.error || state.loading) {
-    return (
-      <div className="Connections">...</div>
-    );
-  }
+  const renderError = ()=> (
+    <div className="Connections__error">
+      { error.message }
+    </div>
+  );
+
+  const renderLoading = ()=> (
+    <div className="Connections__loading">
+      Loading...
+    </div>
+  );
+
+  const renderConnections = ()=> (
+    connections.map(connection => (
+      <Connection
+        key={connection.connectionName}
+        label={connection.label}
+        running={connection.running}
+        disabled={connection.disabled}
+        active={connection.active}
+        preferred={connection.preferred}
+        onRefresh={()=> swallowError(refresh(connection.connectionName))}
+        onPrefer={()=> {
+          setPollData(false); // Give some time for the router to switch connections
+          dispatch({ type: 'PREFER', connection: connection });
+          swallowError(
+            prefer(connection.connectionName).finally(()=> setPollData(true)) // Restart polling
+          );
+        }}
+      />
+    ))
+  );
 
   return (
     <div className="Connections">
-      {state.connections.map(connection => (
-        <Connection
-          key={connection.connectionName}
-          label={connection.label}
-          running={connection.running}
-          disabled={connection.disabled}
-          active={connection.active}
-          preferred={connection.preferred}
-          onRefresh={()=> swallowError(refresh(connection.connectionName))}
-          onPrefer={()=> {
-            setPollData(false); // Give some time for the router to switch connections
-            dispatch({ type: 'PREFER', connection: connection });
-            swallowError(
-              prefer(connection.connectionName).finally(()=> setPollData(true)) // Restart polling
-            );
-          }}
-        />
-      ))}
+      { error ? renderError() : null }
+      { loading ? renderLoading() : null }
+      { !(error || loading) ? renderConnections() : null }
     </div>
   );
 }

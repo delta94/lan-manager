@@ -1,4 +1,4 @@
-import React, { useState, useReducer, useEffect } from 'react';
+import React, { useState, useReducer, useEffect, useCallback } from 'react';
 const delay = (timeout)=> new Promise((resolve)=> setTimeout(resolve, timeout));
 
 const initialState = {
@@ -41,17 +41,17 @@ function swallowError(promise) {
 
 function reducer(state, action) {
   switch(action.type) {
-    case 'LOADING':
-      return { ...state, loading: true, error: null };
-    case 'ERROR':
-      return { ...state, loading: false, error: action.error };
-    case 'LOAD':
-      return { loading: false, error: null, connections: action.connections };
+    case 'SET_LOADING':
+      return { ...state, loading: action.loading };
+    case 'SET_ERROR':
+      return { ...state, error: action.error };
+    case 'SET_CONNECTIONS':
+      return { ...state, connections: action.connections };
     case 'PREFER':
-      state.connections.forEach(c=> c.preferred = false); // Remove preferred from other connections
-      state.connections.forEach(c=> c.active = false); // Remove active from other connections
-      action.connection.preferred = true;
-      action.connection.active = true;
+      state.connections.forEach(c=> c.preferred = false); // Remove preferred from all connections
+      state.connections.forEach(c=> c.active = false); // Remove active from all connections
+      action.connection.preferred = true; // prefer the selected one
+      action.connection.active = true; // mark the selected connection as active
       return { ...state };
     default:
       throw new Error(`Invalid action ${action.type}`);
@@ -63,24 +63,22 @@ export default function Connections() {
   const [ pollData, setPollData ] = useState(true);
   const { error, loading, connections } = state;
 
-  // Load on mount
-  useEffect(()=> {
+  const loadConnections = useCallback(()=> {
     load()
-      .then(connections=> dispatch({ type: 'LOAD', connections }))
-      .catch((err)=> {
-        dispatch({ type: 'LOADING', loading: false });
-        dispatch({ type: 'ERROR', error: err });
-      });
-  }, []);
+      .then(connections=> dispatch({ type: 'SET_CONNECTIONS', connections }))
+      .catch((err)=> dispatch({ type: 'SET_ERROR', error: err }))
+      .finally(()=> dispatch({ type: 'SET_LOADING', loading: false }));
+  }, [])
+
+  // Load on mount
+  useEffect(()=> loadConnections(), [ loadConnections ]);
 
   // Reload data every 3 seconds
   useEffect(()=> {
     if(!pollData) return;
-    const interval = setInterval(()=> swallowError(
-      load().then(connections=> dispatch({ type: 'LOAD', connections }))
-    ), 3 * 1000);
+    const interval = setInterval(loadConnections, 3 * 1000);
     return ()=> clearInterval(interval);
-  }, [pollData]);
+  }, [pollData, loadConnections]);
 
   const renderError = ()=> (
     <div className="Connections__error">
@@ -108,7 +106,11 @@ export default function Connections() {
           setPollData(false); // Give some time for the router to switch connections
           dispatch({ type: 'PREFER', connection });
           swallowError(
-            prefer(connection.connectionName).finally(()=> setPollData(true)) // Restart polling
+            prefer(connection.connectionName)
+              .finally(()=> {
+                loadConnections();
+                setPollData(true);  // Restart polling
+              })
           );
         }}
       />

@@ -26,6 +26,7 @@ const task = process.argv[2];
       await docker.push();
       break;
     case 'watch-start':
+      await assets.build(),
       await Promise.all([
         assets.watch(),
         run('node-dev --no-notify src/index.js', { stdio: 'inherit' })

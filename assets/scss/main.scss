@@ -2,7 +2,7 @@
   max-width: 1000px;
   margin: 0 auto;
   display: grid;
-  padding: $gap-lg;
+  padding: $gap-md;
   grid-column-gap: $gap-lg;
   grid-row-gap: $gap-xxl;
   grid-template-columns: 1fr 1fr;
@@ -31,7 +31,7 @@
     font-weight: normal;
     text-align: center;
     padding: $gap-lg;
-    font-size: $font-size-lg;
+    font-size: $font-size-xl;
   }
 
   &__content {

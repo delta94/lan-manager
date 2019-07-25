@@ -5,19 +5,23 @@
   align-content: center;
   border-radius: 4px;
   padding: $gap-xl;
-  background: $color-accent;
+  background: $color-background-highlighted;
 
   &--up {
     background: $color-success;
-    color: $color-text-inverse;
+    color: $color-text-highlighted;
   }
 
   &--down {
     background: $color-danger;
-    color: $color-text-inverse;
+    color: $color-text-highlighted;
   }
 
   &__icon {
+    font-size: $font-size-xxl;
+  }
+
+  &__status {
     font-size: $font-size-lg;
   }
 }

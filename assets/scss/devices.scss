@@ -18,20 +18,20 @@
   align-content: center;
   border-radius: 4px;
   padding: $gap-xl;
-  background: $color-accent;
+  background: $color-background-highlighted;
 
   &--online {
     background: $color-success;
-    color: $color-text-inverse;
+    color: $color-text-highlighted;
   }
 
   &--offline {
     background: $color-danger;
-    color: $color-text-inverse;
+    color: $color-text-highlighted;
   }
 
   &__icon {
-    font-size: $font-size-lg;
+    font-size: $font-size-xxl;
   }
 
   &__ip {

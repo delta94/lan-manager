@@ -1,8 +1,9 @@
-$color-text: #22262E;
-$color-text-inverse: rgba(white, .8);
+$color-text: rgba(white, .6);
+$color-text-highlighted: rgba(white, .8);
+$color-background: #22262E;
+$color-background-highlighted: lighten(#22262E, 5%);
 $color-success: #00b894;
 $color-danger: #ff6b6b;
-$color-accent: lighten(#22262E, 5%);
 
 $gap-sm: 5px;
 $gap-md: 10px;
@@ -12,4 +13,8 @@ $gap-xxl: 25px;
 
 $radius-md: 4px;
 
-$font-size-lg: 3rem;
+$font-size-sm: 1rem;
+$font-size-md: 1.4rem;
+$font-size-lg: 1.8rem;
+$font-size-xl: 2rem;
+$font-size-xxl: 3rem;

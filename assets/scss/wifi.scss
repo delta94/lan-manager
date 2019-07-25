@@ -6,24 +6,24 @@
   align-content: center;
   border-radius: 4px;
   padding: $gap-lg;
-  background: $color-accent;
+  background: $color-background-highlighted;
 
   &--up {
     background: $color-success;
-    color: $color-text-inverse;
+    color: $color-text-highlighted;
   }
 
   &--down {
     background: $color-danger;
-    color: $color-text-inverse;
+    color: $color-text-highlighted;
   }
 
   &__icon {
-    font-size: $font-size-lg;
+    font-size: $font-size-xxl;
   }
 
   &__name {
-    font-size: $font-size-lg;
+    font-size: $font-size-xl;
   }
 
   &__password {

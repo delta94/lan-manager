@@ -1,47 +1,48 @@
 .Connections {
   display: grid;
-  grid-auto-flow: column;
-  grid-template-rows: auto;
   grid-gap: $gap-lg;
 }
 
 .Connection {
   display: grid;
+  grid-template-columns: auto max-content;
   grid-gap: $gap-md;
   align-content: center;
   border-radius: 4px;
-  padding: $gap-xl;
-  background: $color-accent;
+  padding: $gap-md;
+  background: $color-background-highlighted;
 
   &__label {
-    font-size: $font-size-lg;
-    text-align: center;
+    align-self: center;
+    font-size: $font-size-xl;
   }
 
   &__actions {
+    align-self: center;
     display: grid;
     justify-content: center;
     grid-auto-flow: column;
+    align-content: center;
     grid-gap: $gap-sm;
   }
 
   &--not-running {
     background: $color-danger;
-    color: white;
+    color: $color-text-highlighted;
   }
 
   &--active {
     background: $color-success;
-    color: white;
+    color: $color-text-highlighted;
   }
 
   &__action {
-    background: rgba($color-text, .3);
-    color: white;
+    background: rgba($color-background, .5);
+    color: $color-text-highlighted;
   }
 
   &__action:hover {
     background: white;
-    color: $color-text;
+    color: $color-background;
   }
 }

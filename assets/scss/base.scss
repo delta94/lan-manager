@@ -15,8 +15,8 @@ html {
 
 body {
   font-size: 1.5rem;
-  background: #22262E;
-  color: $color-text-inverse;
+  background: $color-background;
+  color: $color-text;
   @media (display-mode: standalone) {
     background-color: #3498db; //Make the background color match the header in PWA mode
   }
@@ -28,7 +28,7 @@ button {
   text-align: center;
   color: inherit;
   border: none;
-  background: $color-accent;
+  background: $color-background-highlighted;
   border-radius: 4px;
   -webkit-appearance: none;
   -moz-appearance: none;

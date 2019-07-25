@@ -4,16 +4,15 @@ FROM node:10 as builder
 RUN mkdir -p /app
 WORKDIR /app
 
-COPY package.json /app/
-COPY package-lock.json /app/
+COPY package.json .
+COPY package-lock.json .
 RUN npm install
 
-COPY assets /app/assets
+COPY tasks ./tasks
+COPY tasks.js .
 
-COPY tasks /app/tasks
-COPY tasks.js /app/
-
-COPY webpack.config.js /app/
+COPY assets ./assets
+COPY webpack.config.js .
 
 RUN NODE_ENV=production npm run build
 
@@ -23,15 +22,14 @@ FROM node:10-alpine
 RUN mkdir -p /app
 WORKDIR /app
 
-COPY package.json /app/
-COPY package-lock.json /app/
+COPY package.json .
+COPY package-lock.json .
 RUN npm install --production
 
 COPY mikronode.patch .
 RUN patch ./node_modules/mikronode/dist/mikronode.js mikronode.patch
 
-COPY src /app/src
-
-COPY --from=builder /app/public /app/public
+COPY --from=builder /app/public ./public
+COPY src ./src
 
 CMD ["npm", "run", "start"]

@@ -12,7 +12,7 @@ export default function Devices() {
 
   const renderLoading = ()=> (
     <div className="Devices__loading">
-      Loading...
+      ...
     </div>
   );
 

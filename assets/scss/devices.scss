@@ -8,6 +8,11 @@
       grid-template-columns: repeat(2, 1fr);
     }
   }
+
+  &__loading, &__error {
+    text-align: center;
+    align-self: center;
+  }
 }
 
 .Device {

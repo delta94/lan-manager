@@ -74,7 +74,7 @@ export default function Connections() {
 
   const renderLoading = ()=> (
     <div className="Connections__loading">
-      Loading...
+      ...
     </div>
   );
 

@@ -1,6 +1,11 @@
 .Connections {
   display: grid;
   grid-gap: $gap-lg;
+
+  &__loading, &__error {
+    text-align: center;
+    align-self: center;
+  }
 }
 
 .Connection {

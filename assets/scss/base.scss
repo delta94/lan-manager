@@ -22,6 +22,11 @@ body {
   }
 }
 
+#app {
+  background: $color-background;
+  min-height: 100vh;
+}
+
 button {
   padding: 8px 12px;
   cursor: pointer;

@@ -1,4 +1,4 @@
-#Builder image
+# Builder image
 FROM node:10 as builder
 
 RUN mkdir -p /app
@@ -16,7 +16,7 @@ COPY webpack.config.js .
 
 RUN NODE_ENV=production npm run build
 
-#Final image
+# Final image
 FROM node:10-alpine
 
 RUN mkdir -p /app

@@ -1,0 +1,28 @@
+From 8e72abf637d8576d1554f3a30972363f8a9ce6d7 Mon Sep 17 00:00:00 2001
+From: Subash Pathak <subash@subashpathak.com>
+Date: Thu, 25 Jul 2019 18:47:15 +0545
+Subject: [PATCH] Update mikronode.js
+
+---
+ mikronode.js | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/mikronode.js b/mikronode.js
+index 7253581..9a9075a 100644
+--- a/mikronode.js
++++ b/mikronode.js
+@@ -353,6 +353,11 @@ return /******/ (function(modules) { // webpackBootstrap
+ 	                // Create a connection handler
+ 
+ 	                _this.connection = new _Connection2.default(_extends({}, stream, { close: close }), function (challenge) {
++                        stream.write([
++                          "/login",
++                          "=name=" + user,
++                          "=password=" + password
++                      ]);
+ 	                    var md5 = _crypto2.default.createHash('md5');
+ 	                    md5.update(Buffer.concat([Buffer.from(nullString + password), Buffer.from(challenge)]));
+ 	                    stream.write(["/login", "=name=" + user, "=response=00" + md5.digest("hex")]);
+-- 
+2.20.1 (Apple Git-117)
+

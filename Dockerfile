@@ -27,6 +27,9 @@ COPY package.json /app/
 COPY package-lock.json /app/
 RUN npm install --production
 
+COPY mikronode.patch .
+RUN patch ./node_modules/mikronode/dist/mikronode.js mikronode.patch
+
 COPY src /app/src
 
 COPY --from=builder /app/public /app/public

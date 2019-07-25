@@ -59,10 +59,10 @@ export default function Connections() {
   // Load connections on mount
   useEffect(()=> loadConnections(), []);
 
-  // Reload data every 3 seconds
+  // Reload data every 2 seconds
   useEffect(()=> {
     if(!pollData) return;
-    const interval = setInterval(loadConnections, 3 * 1000);
+    const interval = setInterval(loadConnections, 2 * 1000);
     return ()=> clearInterval(interval);
   }, [pollData]);
 

@@ -5,8 +5,7 @@ const ROOT_DIR = path.resolve(__dirname, '../');
 
 async function getTag() {
   const out = await run('git rev-parse --short HEAD', { cwd: ROOT_DIR });
-  const hash = out.toString('utf-8').trim();
-  return `subash/lan-manager:${hash}`;
+  return `subash/lan-manager:${out.trim()}`;
 }
 
 async function build() {

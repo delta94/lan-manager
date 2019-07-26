@@ -17,6 +17,7 @@ body {
   font-size: 1.5rem;
   background: $color-background;
   color: $color-text;
+  -webkit-user-select: none;
   @media (display-mode: standalone) {
     background-color: #3498db; //Make the background color match the header in PWA mode
   }

@@ -1,5 +1,4 @@
 const express = require('express');
-const sortBy = require('lodash.sortby');
 const mikrotik = require('./mikrotik');
 const isReachable = require('./utils/is-reachable');
 const wrapAsync = require('./utils/wrap-async-middleware');
@@ -24,28 +23,7 @@ router.use((req, res, next)=> {
 
 router.get('/devices', wrapAsync(async (req, res, next)=> {
   const stats = await Promise.all(devices.map( device => isReachable(device.ip)));
-  const deviceList = stats.map( (stat, index)=> {
-    return {
-      ...devices[index],
-      online: stat
-    };
-  });
-  res.apiSuccess(deviceList);
-}));
-
-router.get('/arp', wrapAsync(async (req, res, next)=> {
-  let devices = await mikrotik.request('/ip/arp/print');
-  devices = devices.filter( device=> mikrotik.stringToBoolean(device.complete)); //Only list complete arp entries
-  const stats = await Promise.all(devices.map( device => isReachable(device.address)));
-  const list = devices.map( (device, index)=> {
-    return {
-      address: device.address,
-      mac: device['mac-address'],
-      lan: device.address.startsWith('192.168'),
-      active: stats[index]
-    };
-  });
-  res.apiSuccess(sortBy(list, 'address'));
+  res.apiSuccess(stats.map((online, index)=> ({ ...devices[index], online })));
 }));
 
 router.get('/connections', wrapAsync(async (req, res, next)=> {
@@ -65,7 +43,7 @@ router.get('/connections', wrapAsync(async (req, res, next)=> {
   }
 
   const connections = pppoeInterfaces.map( iface => {
-    const route = defaultRoutes.find( route => route.gateway === iface.name);
+    const route = defaultRoutes.find( route=> route.gateway === iface.name);
     return {
       label: iface.name.split('-')[1], //Interface names look like `PPPoE-ISPName`,
       connectionName: iface.name,
@@ -81,10 +59,10 @@ router.get('/connections', wrapAsync(async (req, res, next)=> {
 
 router.post('/connections/prefer/:interfaceName', wrapAsync(async (req, res, next)=> {
   const interfaces = await mikrotik.request('/interface/print');
-  const pppoeInterfaces = interfaces.filter( iface => iface.name.startsWith('PPPoE'));
+  const pppoeInterfaces = interfaces.filter( iface=> iface.name.startsWith('PPPoE'));
 
   //Only PPPoE interfaces can be preferred
-  const iface = pppoeInterfaces.find( iface => iface.name === req.params.interfaceName);
+  const iface = pppoeInterfaces.find( iface=> iface.name === req.params.interfaceName);
   if(!iface) return res.apiFail({ message: 'Invalid Interface Name'});
 
   //Get routes with `Default` label; Don't use route.gateway because same gateway interface can be shared by other routes
@@ -102,10 +80,10 @@ router.post('/connections/prefer/:interfaceName', wrapAsync(async (req, res, nex
 
 router.post('/connections/refresh/:interfaceName', wrapAsync(async (req, res, next)=> {
   const interfaces = await mikrotik.request('/interface/print');
-  const pppoeInterfaces = interfaces.filter( iface => iface.name.startsWith('PPPoE'));
+  const pppoeInterfaces = interfaces.filter( iface=> iface.name.startsWith('PPPoE'));
 
   //Only PPPoE interfaces can be refreshed
-  const iface = pppoeInterfaces.find( iface => iface.name === req.params.interfaceName);
+  const iface = pppoeInterfaces.find( iface=> iface.name === req.params.interfaceName);
   if(!iface) return res.apiFail({ message: 'Invalid Interface Name'});
 
   //Refresh the interface
@@ -118,13 +96,13 @@ router.post('/connections/refresh/:interfaceName', wrapAsync(async (req, res, ne
 //Return combined speed of all PPPoE interfaces
 router.get('/throughput', wrapAsync(async (req, res, next)=> {
   const interfaces = await mikrotik.request('/interface/print');
-  const pppoeInterfaces = interfaces.filter( iface => iface.name.startsWith('PPPoE'));
+  const pppoeInterfaces = interfaces.filter( iface=> iface.name.startsWith('PPPoE'));
   let rxSpeed = 0, txSpeed = 0;
 
   for(const iface of pppoeInterfaces) {
     let [ stats ] = await mikrotik.request('/interface/monitor-traffic', { interface: iface.name, once: true });
-    rxSpeed = rxSpeed + Number.parseInt(stats['rx-bits-per-second'], 10);
-    txSpeed = txSpeed + Number.parseInt(stats['tx-bits-per-second'], 10);
+    rxSpeed += Number.parseInt(stats['rx-bits-per-second'], 10);
+    txSpeed += Number.parseInt(stats['tx-bits-per-second'], 10);
   }
 
   res.apiSuccess({ rxSpeed, txSpeed });

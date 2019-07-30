@@ -71,7 +71,7 @@ router.post('/connections/prefer/:interfaceName', wrapAsync(async (req, res, nex
   const pppoeInterfaces = interfaces.filter( iface=> iface.type === 'pppoe-out' );
   const iface = pppoeInterfaces.find( iface=> iface.name === req.params.interfaceName);
 
-  //Only PPPoE interfaces can be refreshed
+  //Only PPPoE interfaces can be preferred
   if(iface.type !== 'pppoe-out') return res.apiFail({ message: 'Only PPPoE interfaces can be preferred'});
 
   // Get default route for each PPPoE interface

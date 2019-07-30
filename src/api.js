@@ -31,6 +31,7 @@ router.get('/devices', wrapAsync(async (req, res, next)=> {
     { deviceName: `Nishan's STA`, ip: `192.168.2.4` },
     { deviceName: `Nishan's Router`, ip: `192.168.2.5` }
   ];
+
   const stats = await Promise.all(devices.map( device => isReachable(device.ip)));
   res.apiSuccess(stats.map((online, index)=> ({ ...devices[index], online })));
 }));

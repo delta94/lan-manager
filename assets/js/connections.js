@@ -82,7 +82,7 @@ export default function Connections() {
     connections.map(connection => (
       <Connection
         key={connection.interfaceName}
-        label={connection.interfaceName.split('-')[1]} // Connection name looks like `PPPoE-ISPName`,
+        interfaceName={connection.interfaceName}
         running={connection.running}
         disabled={connection.disabled}
         active={connection.active}
@@ -117,7 +117,7 @@ export default function Connections() {
   );
 }
 
-function Connection({ label, running, disabled, active, preferred, onRefresh, onPrefer }) {
+function Connection({ interfaceName, running, disabled, active, preferred, onRefresh, onPrefer }) {
   const className = [
     `Connection`,
     `Connection--${running ? 'running': 'not-running'}`,
@@ -125,6 +125,8 @@ function Connection({ label, running, disabled, active, preferred, onRefresh, on
     `Connection--${active ? 'active': 'not-active'}`,
     `Connection--${preferred ? 'preferred': 'not-preferred'}`
   ].join(' ');
+
+  const label = interfaceName.split('-')[1]; // Connection name looks like `PPPoE-ISPName`,
 
   const refreshButton = ()=> (
     <button className="Connection__action" title="Refresh Connection" onClick={onRefresh}>

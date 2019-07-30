@@ -10,8 +10,8 @@ async function load() {
   throw err;
 }
 
-async function refresh(connectionName) {
-  const response = await fetch(`/api/connections/refresh/${connectionName}`, { method: 'post' });
+async function refresh(interfaceName) {
+  const response = await fetch(`/api/connections/refresh/${interfaceName}`, { method: 'post' });
   const json = await response.json();
   if(!json.error) return;
   let err = new Error(json.message);
@@ -19,8 +19,8 @@ async function refresh(connectionName) {
   throw err;
 }
 
-async function prefer(connectionName) {
-  const response = await fetch(`/api/connections/prefer/${connectionName}`, { method: 'post' });
+async function prefer(interfaceName) {
+  const response = await fetch(`/api/connections/prefer/${interfaceName}`, { method: 'post' });
   const json = await response.json();
   await delay(2 * 1000); // Give a few seconds for the router to switch connections
   if(!json.error) return;
@@ -81,15 +81,15 @@ export default function Connections() {
   const renderConnections = ()=> (
     connections.map(connection => (
       <Connection
-        key={connection.connectionName}
-        label={connection.label}
+        key={connection.interfaceName}
+        label={connection.interfaceName.split('-')[1]} // Connection name looks like `PPPoE-ISPName`,
         running={connection.running}
         disabled={connection.disabled}
         active={connection.active}
         preferred={connection.preferred}
         onRefresh={()=> {
           swallowError(
-            refresh(connection.connectionName)
+            refresh(connection.interfaceName)
               .finally(()=> loadConnections())
           );
         }}
@@ -97,7 +97,7 @@ export default function Connections() {
           setPollData(false); // Pause polling while requesting the server
           markPreferred(connection); // Mark as preferred before requesting the server for snappier transition
           swallowError(
-            prefer(connection.connectionName)
+            prefer(connection.interfaceName)
               .finally(()=> {
                 loadConnections();
                 setPollData(true);  // Restart polling

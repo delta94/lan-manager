@@ -38,50 +38,55 @@ router.get('/devices', wrapAsync(async (req, res, next)=> {
 
 router.get('/connections', wrapAsync(async (req, res, next)=> {
   const interfaces = await mikrotik.request('/interface/print');
-  const pppoeInterfaces = interfaces.filter( iface => iface.name.startsWith('PPPoE'));
+  const pppoeInterfaces = interfaces.filter( iface=> iface.type === 'pppoe-out' );
 
-  //Get routes with `Default` label; Don't use route.gateway because same gateway interface can be shared by other routes
+  // Get default route for each PPPoE interface
   const routes = await mikrotik.request('/ip/route/print');
-  const defaultRoutes = routes.filter( route=> route.comment && route.comment.startsWith('Default'));
+  const pppoeRoutes = pppoeInterfaces.map( iface=> (
+    routes.find( route=> (
+      route.gateway === iface.name &&
+      !route['routing-mark'] &&
+      mikrotik.stringToBoolean(route.static)
+    ))
+  ));
 
-  //Preferred route is the one with lowest distance value
-  let preferredRoute = defaultRoutes[0];
-  for(const route of defaultRoutes) {
-    if(Number.parseInt(route.distance, 10) < Number.parseInt(preferredRoute.distance, 10)) {
-      preferredRoute = route;
-    }
-  }
+  // Preferred route is the one with lowest distance value
+  const isPreferred = route=> (
+    Math.min(...pppoeRoutes.map(route=> parseInt(route.distance, 10))) == parseInt(route.distance, 10)
+  );
 
-  const connections = pppoeInterfaces.map( iface => {
-    const route = defaultRoutes.find( route=> route.gateway === iface.name);
-    return {
-      label: iface.name.split('-')[1], //Interface names look like `PPPoE-ISPName`,
-      connectionName: iface.name,
-      preferred: preferredRoute.gateway === iface.name,
+  res.apiSuccess(
+    pppoeInterfaces.map((iface, index)=> ({
+      interfaceName: iface.name,
+      preferred: isPreferred(pppoeRoutes[index]),
       running: mikrotik.stringToBoolean(iface.running),
       disabled: mikrotik.stringToBoolean(iface.disabled),
-      active: mikrotik.stringToBoolean(route.active)
-    };
-  });
-
-  res.apiSuccess(connections);
+      active: mikrotik.stringToBoolean(pppoeRoutes[index].active)
+    }))
+  );
 }));
 
 router.post('/connections/prefer/:interfaceName', wrapAsync(async (req, res, next)=> {
   const interfaces = await mikrotik.request('/interface/print');
-  const pppoeInterfaces = interfaces.filter( iface=> iface.name.startsWith('PPPoE'));
-
-  //Only PPPoE interfaces can be preferred
+  const pppoeInterfaces = interfaces.filter( iface=> iface.type === 'pppoe-out' );
   const iface = pppoeInterfaces.find( iface=> iface.name === req.params.interfaceName);
-  if(!iface) return res.apiFail({ message: 'Invalid Interface Name'});
 
-  //Get routes with `Default` label; Don't use route.gateway because same gateway interface can be shared by other routes
+  //Only PPPoE interfaces can be refreshed
+  if(iface.type !== 'pppoe-out') return res.apiFail({ message: 'Only PPPoE interfaces can be preferred'});
+
+  // Get default route for each PPPoE interface
   const routes = await mikrotik.request('/ip/route/print');
-  const defaultRoutes = routes.filter( route=> route.comment && route.comment.startsWith('Default'));
+  const pppoeRoutes = pppoeInterfaces.map( iface=> (
+    routes.find( route=> (
+      route.gateway === iface.name &&
+      !route['routing-mark'] &&
+      mikrotik.stringToBoolean(route.static)
+    ))
+  ));
 
-  //Setting route distance to 2 prefers the route and setting the route distance higher makes the route less preferred
-  for(const route of defaultRoutes) {
-    const distance = route.gateway === iface.name ? 2: 3; //Set the selected interface route distance to 2 all other routes to 3
+  // Setting a shorter route distance makes the route preferred
+  for(const route of pppoeRoutes) {
+    const distance = route.gateway === iface.name ? 2: 3; // Set the selected interface route distance to 2 all other routes to 3
     await mikrotik.request('/ip/route/set', { '.id': route['.id'], distance });
   }
 
@@ -90,11 +95,10 @@ router.post('/connections/prefer/:interfaceName', wrapAsync(async (req, res, nex
 
 router.post('/connections/refresh/:interfaceName', wrapAsync(async (req, res, next)=> {
   const interfaces = await mikrotik.request('/interface/print');
-  const pppoeInterfaces = interfaces.filter( iface=> iface.name.startsWith('PPPoE'));
+  const iface = interfaces.find( iface=> iface.name === req.params.interfaceName);
 
   //Only PPPoE interfaces can be refreshed
-  const iface = pppoeInterfaces.find( iface=> iface.name === req.params.interfaceName);
-  if(!iface) return res.apiFail({ message: 'Invalid Interface Name'});
+  if(iface.type !== 'pppoe-out') return res.apiFail({ message: 'Only PPPoE interfaces can be refreshed'});
 
   //Refresh the interface
   await mikrotik.request('/interface/set', { '.id': iface['.id'], disabled: 'yes' });
@@ -106,16 +110,16 @@ router.post('/connections/refresh/:interfaceName', wrapAsync(async (req, res, ne
 //Return combined speed of all PPPoE interfaces
 router.get('/throughput', wrapAsync(async (req, res, next)=> {
   const interfaces = await mikrotik.request('/interface/print');
-  const pppoeInterfaces = interfaces.filter( iface=> iface.name.startsWith('PPPoE'));
-  let rxSpeed = 0, txSpeed = 0;
+  const pppoeInterfaces = interfaces.filter( iface=> iface.type === 'pppoe-out' );
 
-  for(const iface of pppoeInterfaces) {
-    let [ stats ] = await mikrotik.request('/interface/monitor-traffic', { interface: iface.name, once: true });
-    rxSpeed += Number.parseInt(stats['rx-bits-per-second'], 10);
-    txSpeed += Number.parseInt(stats['tx-bits-per-second'], 10);
-  }
+  const throughput = await Promise.all(pppoeInterfaces.map( iface=> (
+    mikrotik.request('/interface/monitor-traffic', { interface: iface.name, once: true })
+  )));
 
-  res.apiSuccess({ rxSpeed, txSpeed });
+  res.apiSuccess({
+    rxSpeed: throughput.reduce((total, result)=> total + parseInt(result[0]['rx-bits-per-second'], 10), 0),
+    txSpeed: throughput.reduce((total, result)=> total + parseInt(result[0]['tx-bits-per-second'], 10), 0)
+  });
 }));
 
 router.get('/guest-wifi', wrapAsync(async (req, res, next)=> {

@@ -149,7 +149,7 @@ router.post('/guest-wifi/reset-password', wrapAsync(async (req, res, next)=> {
 }));
 
 router.get('/power-status', wrapAsync(async (req, res, next)=> {
-  res.apiSuccess({ status: await isReachable(`192.168.100.3`) });
+  res.apiSuccess({ status: await isReachable(`192.168.1.9`) });
 }));
 
 module.exports = router;

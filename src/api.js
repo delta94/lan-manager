@@ -2,7 +2,6 @@ const express = require('express');
 const mikrotik = require('./mikrotik');
 const isReachable = require('./utils/is-reachable');
 const wrapAsync = require('./utils/wrap-async-middleware');
-const devices = require('./devices');
 const unifi = require('./unifi');
 const password = require('./utils/password');
 const router = new express.Router();
@@ -22,6 +21,17 @@ router.use((req, res, next)=> {
 });
 
 router.get('/devices', wrapAsync(async (req, res, next)=> {
+  const devices = [
+    { deviceName: `Router`, ip: `192.168.1.1` },
+    { deviceName: `Techminds ONU`, ip: `192.168.100.1` },
+    { deviceName: `MCN ONU`, ip: `192.168.100.2` },
+    { deviceName: `Subash's Room AP`, ip: `192.168.1.5` },
+    { deviceName: `Living Room AP`, ip: `192.168.1.6` },
+    { deviceName: `Nishan's AP`, ip: `192.168.2.3` },
+    { deviceName: `Nishan's STA`, ip: `192.168.2.4` },
+    { deviceName: `Nishan's Router`, ip: `192.168.2.5` }
+  ];
+
   const stats = await Promise.all(devices.map( device => isReachable(device.ip)));
   res.apiSuccess(stats.map((online, index)=> ({ ...devices[index], online })));
 }));

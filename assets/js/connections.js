@@ -144,8 +144,8 @@ function Connection({ interfaceName, running, disabled, active, preferred, onRef
     <a className={className}>
       <div className="Connection__label">{label}</div>
       <div className="Connection__actions">
-        { refreshButton() }
         { !preferred ? preferButton() : null }
+        { refreshButton() }
       </div>
     </a>
   );

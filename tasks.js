@@ -21,7 +21,10 @@ const task = process.argv[2];
     case 'docker:build':
       await docker.build();
       break;
-    case 'docker:publish':
+    case 'docker:push':
+      await docker.push();
+      break;
+    case 'docker:release':
       await docker.build();
       await docker.push();
       break;

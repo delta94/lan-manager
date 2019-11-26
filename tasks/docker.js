@@ -5,7 +5,7 @@ const ROOT_DIR = path.resolve(__dirname, '../');
 
 async function getTag() {
   const out = await run('git rev-parse --short HEAD', { cwd: ROOT_DIR });
-  return `registry.gitlab.com/sbspk/containers/lan-manager:${out.trim()}`;
+  return `subash/lan-manager:${out.trim()}`;
 }
 
 async function build() {
